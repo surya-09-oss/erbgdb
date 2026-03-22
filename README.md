@@ -55,14 +55,14 @@ Or manually:
 
 ### Railway
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template?referralCode=surya)
-
-Or manually:
+Or:
 
 1. Go to [railway.app](https://railway.app) and sign in with GitHub
 2. Click **"New Project"** → **"Deploy from GitHub repo"**
 3. Select this repo — Railway auto-detects the `Procfile`
 4. Your API is live instantly
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/github?repo=surya-09-oss/erbgdb)
 
 ### Koyeb
 
