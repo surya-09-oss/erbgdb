@@ -17,6 +17,9 @@ Free, unlimited, self-hosted JSON API for live cricket scores, IPL 2025 data, an
 |---|---|
 | `GET /` | Documentation page (HTML) |
 | `GET /api/live-matches` | All current live cricket matches |
+| `GET /api/upcoming-matches` | Upcoming scheduled matches |
+| `GET /api/completed-matches` | Recently completed matches |
+| `GET /api/running-matches` | Currently in-progress matches |
 | `GET /api/match-score?id={id}` | Detailed live score for a specific match |
 | `GET /api/ipl/live-scores` | IPL 2025 live scores |
 | `GET /api/ipl/schedule` | IPL 2025 match schedule |
