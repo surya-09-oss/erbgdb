@@ -219,8 +219,8 @@
     <div class="container">
         <header>
             <h1>Cricket API</h1>
-            <p>Free, unlimited, self-hosted JSON API for live cricket scores, IPL data, and more.</p>
-            <span class="badge">v1.0</span>
+            <p>Free, unlimited, self-hosted JSON API for live cricket scores, IPL data, and more. Compatible with <a href="https://github.com/sanwebinfo/cricket-api" target="_blank" style="color:#111;font-weight:600">sanwebinfo/cricket-api</a>.</p>
+            <span class="badge">v2.0</span>
             <div class="stats">
                 <span class="stat"><strong>Auto-refresh:</strong> every 10s</span>
                 <span class="stat"><strong>Auth:</strong> None required</span>
@@ -230,7 +230,106 @@
         </header>
 
         <div class="refresh-note">
-            <strong>Auto-updating cache:</strong> All data is cached and automatically refreshed every <strong>10 seconds</strong> from source APIs. You always get fresh data with zero delay.
+            <strong>Auto-updating background task:</strong> A background task automatically fetches and caches live match data from Cricbuzz every <strong>10 seconds</strong>. All endpoints use a 10-second TTL cache, so you always get fresh data with zero delay.
+        </div>
+
+        <!-- CRICKET-API COMPATIBLE -->
+        <h2>Cricket-API Compatible</h2>
+        <p style="margin-bottom:16px;color:#555;font-size:0.9rem">Drop-in replacement for <a href="https://github.com/sanwebinfo/cricket-api" target="_blank" style="color:#111;font-weight:600">sanwebinfo/cricket-api</a>. Same JSON format, auto-updating.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/score?id={match_id}</span>
+                <span class="endpoint-desc">Flat JSON score</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns match score in the flat JSON format used by cricket-api. Copy the match ID from Cricbuzz live match URL or from <span class="inline-code">/api/live-matches</span>.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Match ID from Cricbuzz</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl "{{ base_url }}/score?id=12345"</code></pre>
+                <div class="section-label">Example Response</div>
+                <pre><code>{
+  "title": "India vs Australia, 3rd T20I - Live Cricket Score",
+  "update": "India need 42 runs in 30 balls",
+  "livescore": "IND 144/3 (15)",
+  "runrate": "CRR: 9.60",
+  "batterone": "Virat Kohli",
+  "batsmanonerun": "68",
+  "batsmanoneball": "(42)",
+  "batsmanonesr": "161.90",
+  "battertwo": "KL Rahul",
+  "batsmantworun": "22",
+  "batsmantwoball": "(18)",
+  "batsmantwosr": "122.22",
+  "bowlerone": "Pat Cummins",
+  "bowleroneover": "3",
+  "bowleronerun": "28",
+  "bowleronewickers": "1",
+  "bowleroneeconomy": "9.33",
+  "bowlertwo": "Mitchell Starc",
+  "bowlertwoover": "4",
+  "bowlertworun": "35",
+  "bowlertwowickers": "2",
+  "bowlertwoeconomy": "8.75"
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/score/live?id={match_id}</span>
+                <span class="endpoint-desc">Nested JSON score</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns match score in the nested JSON format used by cricket-api's <span class="inline-code">/score/live</span> endpoint.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Match ID from Cricbuzz</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl "{{ base_url }}/score/live?id=12345"</code></pre>
+                <div class="section-label">Example Response</div>
+                <pre><code>{
+  "success": "true",
+  "livescore": {
+    "title": "India vs Australia, 3rd T20I",
+    "update": "India need 42 runs in 30 balls",
+    "current": "IND 144/3 (15)",
+    "runrate": "CRR: 9.60",
+    "batsman": "Virat Kohli",
+    "batsmanrun": "68",
+    "ballsfaced": "(42)",
+    "sr": "161.90",
+    "batsmantwo": "KL Rahul",
+    "batsmantworun": "22",
+    "batsmantwoballfaced": "(18)",
+    "batsmantwosr": "122.22",
+    "bowler": "Pat Cummins",
+    "bowlerover": "3",
+    "bowlerruns": "28",
+    "bowlerwickets": "1",
+    "bowlereconomy": "9.33",
+    "bowlertwo": "Mitchell Starc",
+    "bowlertwoover": "4",
+    "bowlertworuns": "35",
+    "bowlertwowickets": "2",
+    "bowlertwoeconomy": "8.75"
+  }
+}</code></pre>
+            </div>
         </div>
 
         <!-- GENERAL CRICKET -->
@@ -424,8 +523,8 @@
         </div>
 
         <footer>
-            <p>Data sourced from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a> and <a href="https://github.com/cu-sanjay/IPL-2025-API-Free" target="_blank">IPL 2025 API</a>.</p>
-            <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited.</p>
+            <p>Data sourced from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a>, <a href="https://github.com/sanwebinfo/cricket-api" target="_blank">sanwebinfo/cricket-api</a>, and <a href="https://github.com/cu-sanjay/IPL-2025-API-Free" target="_blank">IPL 2025 API</a>.</p>
+            <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited &bull; Auto-updating.</p>
         </footer>
     </div>
 </body>

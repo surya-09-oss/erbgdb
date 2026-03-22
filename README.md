@@ -1,30 +1,118 @@
 # Cricket API
 
 Free, unlimited, self-hosted JSON API for live cricket scores, IPL 2025 data, and more.
+Fully compatible with [sanwebinfo/cricket-api](https://github.com/sanwebinfo/cricket-api) format.
 
 ## Features
 
 - **Live Cricket Scores** — All formats (T20, ODI, Test) scraped from Cricbuzz
+- **Cricket-API Compatible** — Drop-in replacement for [sanwebinfo/cricket-api](https://github.com/sanwebinfo/cricket-api) (`/score` and `/score/live` endpoints)
 - **IPL 2025 Data** — Live scores, schedule, points table, team squads, historical winners
-- **10-Second Auto-Refresh Cache** — Always fresh data with zero delay
+- **Auto-Updating Background Task** — Data refreshes automatically every 10 seconds in the background
+- **10-Second TTL Cache** — Always fresh data with zero delay
 - **No API Key Required** — Completely free and unlimited
 - **Self-Hosted** — Deploy anywhere (Docker, Render, Vercel, your own server)
 - **Clean Documentation** — Black & white docs page at the root URL
 
 ## API Endpoints
 
+### Cricket-API Compatible (from [sanwebinfo/cricket-api](https://github.com/sanwebinfo/cricket-api))
+
+| Endpoint | Description |
+|---|---|
+| `GET /score?id={id}` | Match score — flat JSON format (cricket-api compatible) |
+| `GET /score/live?id={id}` | Match score — nested JSON format (cricket-api compatible) |
+
+### General Cricket
+
 | Endpoint | Description |
 |---|---|
 | `GET /` | Documentation page (HTML) |
 | `GET /api/live-matches` | All current live cricket matches |
 | `GET /api/match-score?id={id}` | Detailed live score for a specific match |
+| `GET /healthz` | Health check |
+
+### IPL 2025
+
+| Endpoint | Description |
+|---|---|
 | `GET /api/ipl/live-scores` | IPL 2025 live scores |
 | `GET /api/ipl/schedule` | IPL 2025 match schedule |
 | `GET /api/ipl/points-table` | IPL 2025 points table |
 | `GET /api/ipl/squad/{team_code}` | Team squad (mi, csk, rcb, dc, kkr, pk, rr, srh, gt, lsg) |
 | `GET /api/ipl/winners` | Historical IPL winners |
 | `GET /api/ipl/teams` | All team codes |
-| `GET /healthz` | Health check |
+
+## Auto-Updating
+
+The API runs a **background task** that automatically fetches and caches live match data from Cricbuzz every **10 seconds**. You never need to trigger a refresh — data is always up to date.
+
+All endpoints also use a 10-second TTL cache, so individual requests are served instantly from cache and automatically refreshed.
+
+## Cricket-API Compatible Endpoints
+
+These endpoints return data in the exact same JSON format as [sanwebinfo/cricket-api](https://github.com/sanwebinfo/cricket-api), so you can use this as a drop-in replacement.
+
+### `GET /score?id={match_id}` — Flat JSON
+
+```json
+{
+  "title": "Australia vs Pakistan, 2nd Test - Live Cricket Score",
+  "update": "Day 1: 3rd Session",
+  "livescore": "AUS 168/3 (60)",
+  "runrate": "CRR: 2.8",
+  "batterone": "Travis Head",
+  "batsmanonerun": "5",
+  "batsmanoneball": "(5)",
+  "batsmanonesr": "100",
+  "battertwo": "Marnus Labuschagne",
+  "batsmantworun": "36",
+  "batsmantwoball": "(98)",
+  "batsmantwosr": "36.73",
+  "bowlerone": "Shaheen Afridi",
+  "bowleroneover": "19",
+  "bowleronerun": "61",
+  "bowleronewickers": "0",
+  "bowleroneeconomy": "3.21",
+  "bowlertwo": "Aamer Jamal",
+  "bowlertwoover": "12",
+  "bowlertworun": "37",
+  "bowlertwowickers": "1",
+  "bowlertwoeconomy": "3.08"
+}
+```
+
+### `GET /score/live?id={match_id}` — Nested JSON
+
+```json
+{
+  "success": "true",
+  "livescore": {
+    "title": "Australia vs Pakistan, 2nd Test",
+    "update": "Day 1: 3rd Session",
+    "current": "AUS 168/3 (60)",
+    "runrate": "CRR: 2.8",
+    "batsman": "Travis Head",
+    "batsmanrun": "5",
+    "ballsfaced": "(5)",
+    "sr": "100",
+    "batsmantwo": "Marnus Labuschagne",
+    "batsmantworun": "36",
+    "batsmantwoballfaced": "(98)",
+    "batsmantwosr": "36.73",
+    "bowler": "Shaheen Afridi",
+    "bowlerover": "19",
+    "bowlerruns": "61",
+    "bowlerwickets": "0",
+    "bowlereconomy": "3.21",
+    "bowlertwo": "Aamer Jamal",
+    "bowlertwoover": "12",
+    "bowlertworuns": "37",
+    "bowlertwowickets": "1",
+    "bowlertwoeconomy": "3.08"
+  }
+}
+```
 
 ## Deploy for Free (One-Click)
 
@@ -95,6 +183,7 @@ Visit `http://localhost:8000` for the documentation page.
 ## Data Sources
 
 - [Cricbuzz](https://www.cricbuzz.com/) — Live cricket scores (scraped)
+- [sanwebinfo/cricket-api](https://github.com/sanwebinfo/cricket-api) — Cricket-API compatible JSON format
 - [IPL 2025 API](https://github.com/cu-sanjay/IPL-2025-API-Free) — IPL-specific data
 
 ## Disclaimer
