@@ -84,11 +84,10 @@ docker run -p 8000:8000 cricket-api
 
 ```bash
 # Install dependencies
-pip install poetry
-poetry install
+pip install -r requirements.txt
 
 # Start the dev server
-poetry run uvicorn app.index:app --host 0.0.0.0 --port 8000
+uvicorn app.index:app --host 0.0.0.0 --port 8000
 ```
 
 Visit `http://localhost:8000` for the documentation page.
