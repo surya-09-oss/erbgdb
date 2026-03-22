@@ -50,7 +50,7 @@ Or manually:
 2. Click **"New Web Service"** and connect this repo
 3. Set:
    - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - **Start Command:** `uvicorn app.index:app --host 0.0.0.0 --port $PORT`
 4. Choose the **Free** plan and click **Deploy**
 
 ### Railway
@@ -70,7 +70,7 @@ Or:
 2. Click **"Create App"** → **"GitHub"**
 3. Select this repo and set:
    - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - **Start Command:** `uvicorn app.index:app --host 0.0.0.0 --port $PORT`
 4. Deploy — free tier available
 
 ### Docker (Self-Hosted)
@@ -88,7 +88,7 @@ pip install poetry
 poetry install
 
 # Start the dev server
-poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
+poetry run uvicorn app.index:app --host 0.0.0.0 --port 8000
 ```
 
 Visit `http://localhost:8000` for the documentation page.
