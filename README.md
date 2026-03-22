@@ -163,7 +163,7 @@ Free, unlimited, self-hosted JSON API for IPL 2026 data with 10-second auto-refr
 ```bash
 pip install poetry
 poetry install
-poetry run fastapi dev app/main.py
+poetry run fastapi dev app/index.py
 ```
 
 Visit `http://localhost:8000` for the documentation page.
