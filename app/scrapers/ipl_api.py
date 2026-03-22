@@ -29,6 +29,7 @@ IPL_WINNERS = [
     {"year": 2022, "winner": "Gujarat Titans", "runner_up": "Rajasthan Royals"},
     {"year": 2023, "winner": "Chennai Super Kings", "runner_up": "Gujarat Titans"},
     {"year": 2024, "winner": "Kolkata Knight Riders", "runner_up": "Sunrisers Hyderabad"},
+    {"year": 2025, "winner": "Royal Challengers Bengaluru", "runner_up": "Punjab Kings"},
 ]
 
 

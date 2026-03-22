@@ -294,21 +294,21 @@ def _extract_rsc_json(html_text: str, key: str) -> dict | None:
 # ---------------------------------------------------------------------------
 # IPL series constants
 # ---------------------------------------------------------------------------
-IPL_SERIES_ID = 9237
-IPL_SERIES_SLUG = "indian-premier-league-2025"
+IPL_SERIES_ID = 9241
+IPL_SERIES_SLUG = "indian-premier-league-2026"
 
 # Mapping of short team codes to Cricbuzz squad IDs and full names
 IPL_SQUAD_MAP: dict[str, dict] = {
-    "csk": {"squad_id": 56913, "team_id": 58, "name": "Chennai Super Kings"},
-    "rr": {"squad_id": 56917, "team_id": 64, "name": "Rajasthan Royals"},
-    "kkr": {"squad_id": 56921, "team_id": 63, "name": "Kolkata Knight Riders"},
-    "srh": {"squad_id": 56925, "team_id": 255, "name": "Sunrisers Hyderabad"},
-    "rcb": {"squad_id": 56929, "team_id": 59, "name": "Royal Challengers Bengaluru"},
-    "dc": {"squad_id": 56933, "team_id": 61, "name": "Delhi Capitals"},
-    "pk": {"squad_id": 56941, "team_id": 65, "name": "Punjab Kings"},
-    "mi": {"squad_id": 56949, "team_id": 62, "name": "Mumbai Indians"},
-    "gt": {"squad_id": 56957, "team_id": 971, "name": "Gujarat Titans"},
-    "lsg": {"squad_id": 56965, "team_id": 966, "name": "Lucknow Super Giants"},
+    "csk": {"squad_id": 99705, "team_id": 58, "name": "Chennai Super Kings"},
+    "dc": {"squad_id": 99716, "team_id": 61, "name": "Delhi Capitals"},
+    "gt": {"squad_id": 99727, "team_id": 971, "name": "Gujarat Titans"},
+    "rcb": {"squad_id": 99738, "team_id": 59, "name": "Royal Challengers Bengaluru"},
+    "pk": {"squad_id": 99749, "team_id": 65, "name": "Punjab Kings"},
+    "kkr": {"squad_id": 99760, "team_id": 63, "name": "Kolkata Knight Riders"},
+    "srh": {"squad_id": 99771, "team_id": 255, "name": "Sunrisers Hyderabad"},
+    "rr": {"squad_id": 99782, "team_id": 64, "name": "Rajasthan Royals"},
+    "lsg": {"squad_id": 99793, "team_id": 966, "name": "Lucknow Super Giants"},
+    "mi": {"squad_id": 99804, "team_id": 62, "name": "Mumbai Indians"},
 }
 
 
@@ -362,7 +362,7 @@ async def fetch_ipl_schedule_from_cricbuzz() -> dict:
                 "start_date": _timestamp_to_ist(info.get("startDate", "")),
             })
 
-    return {"series": "Indian Premier League 2025", "matches": schedule, "total": len(schedule)}
+    return {"series": "Indian Premier League 2026", "matches": schedule, "total": len(schedule)}
 
 
 async def fetch_ipl_points_table_from_cricbuzz() -> dict:
@@ -397,7 +397,7 @@ async def fetch_ipl_points_table_from_cricbuzz() -> dict:
             })
 
     return {
-        "series": pts_data.get("seriesName", "Indian Premier League 2025"),
+        "series": pts_data.get("seriesName", "Indian Premier League 2026"),
         "teams": teams,
         "total": len(teams),
     }
@@ -412,93 +412,101 @@ async def fetch_ipl_live_scores_from_cricbuzz() -> dict:
         or "ipl" in m.get("series", "").lower()
     ]
     return {
-        "series": "Indian Premier League 2025",
+        "series": "Indian Premier League 2026",
         "matches": ipl_matches,
         "total": len(ipl_matches),
     }
 
 
-# IPL 2025 squad data (static for the season, sourced from official announcements)
+# IPL 2026 squad data (static for the season, sourced from official announcements)
 IPL_SQUADS: dict[str, list[str]] = {
     "csk": [
-        "Ruturaj Gaikwad", "Matheesha Pathirana", "Shivam Dube", "Ravindra Jadeja",
-        "MS Dhoni", "Devon Conway", "Rahul Tripathi", "Rachin Ravindra", "R. Ashwin",
-        "Khaleel Ahmed", "Noor Ahmad", "Vijay Shankar", "Sam Curran", "Shaik Rasheed",
-        "Anshul Kamboj", "Mukesh Chaudhary", "Deepak Hooda", "Gurjapneet Singh",
-        "Nathan Ellis", "Jamie Overton", "Kamlesh Nagarkoti", "Ramakrishna Ghosh",
-        "Shreyas Gopal", "Vansh Bedi", "Andre Siddharth",
+        "Ruturaj Gaikwad", "MS Dhoni", "Sanju Samson", "Shivam Dube",
+        "Dewald Brevis", "Ayush Mhatre", "Urvil Patel", "Noor Ahmad",
+        "Nathan Ellis", "Shreyas Gopal", "Khaleel Ahmed", "Ramakrishna Ghosh",
+        "Mukesh Choudhary", "Jamie Overton", "Gurjapneet Singh", "Anshul Kamboj",
+        "Akeal Hosein", "Prashant Veer", "Kartik Sharma", "Matthew Short",
+        "Aman Khan", "Sarfaraz Khan", "Rahul Chahar", "Matt Henry", "Zak Foulkes",
     ],
     "dc": [
-        "Axar Patel", "Kuldeep Yadav", "Tristan Stubbs", "Abishek Porel",
-        "Mitchell Starc", "KL Rahul", "Jake Fraser-McGurk", "T. Natarajan",
-        "Karun Nair", "Sameer Rizvi", "Ashutosh Sharma", "Mohit Sharma",
-        "Faf du Plessis", "Mukesh Kumar", "Darshan Nalkande", "Vipraj Nigam",
-        "Dushmantha Chameera", "Donovan Ferreira", "Ajay Mandal", "Manvanth Kumar",
-        "Tripurana Vijay", "Madhav Tiwari",
+        "KL Rahul", "Axar Patel", "Kuldeep Yadav", "Mitchell Starc",
+        "Tristan Stubbs", "Abishek Porel", "T. Natarajan", "Karun Nair",
+        "Sameer Rizvi", "Ashutosh Sharma", "Vipraj Nigam", "Ajay Mandal",
+        "Tripurana Vijay", "Madhav Tiwari", "Mukesh Kumar", "Dushmantha Chameera",
+        "Nitish Rana", "Auqib Nabi Dar", "Ben Duckett", "David Miller",
+        "Pathum Nissanka", "Lungi Ngidi", "Sahil Parakh", "Prithvi Shaw",
+        "Kyle Jamieson",
     ],
     "gt": [
-        "Rashid Khan", "Shubman Gill", "Sai Sudharsan", "Rahul Tewatia",
-        "Shahrukh Khan", "Kagiso Rabada", "Jos Buttler", "Mohammed Siraj",
-        "Prasidh Krishna", "Nishant Sindhu", "Mahipal Lomror", "Kumar Kushagra",
-        "Anuj Rawat", "Manav Sutar", "Washington Sundar", "Gerald Coetzee",
-        "Arshad Khan", "Gurnoor Brar", "Sherfane Rutherford", "Sai Kishore",
-        "Ishant Sharma", "Jayant Yadav", "Glenn Phillips", "Karim Janat",
-        "Kulwant Khejroliya",
+        "Shubman Gill", "Rashid Khan", "Sai Sudharsan", "Rahul Tewatia",
+        "Shahrukh Khan", "Jos Buttler", "Kagiso Rabada", "Mohammed Siraj",
+        "Prasidh Krishna", "Nishant Sindhu", "Kumar Kushagra", "Anuj Rawat",
+        "Manav Suthar", "Washington Sundar", "Arshad Khan", "Gurnoor Brar",
+        "Sai Kishore", "Ishant Sharma", "Jayant Yadav", "Glenn Phillips",
+        "Ashok Sharma", "Jason Holder", "Tom Banton", "Luke Wood",
+        "Prithviraj Yarra",
     ],
     "kkr": [
-        "Rinku Singh", "Varun Chakaravarthy", "Sunil Narine", "Andre Russell",
-        "Harshit Rana", "Ramandeep Singh", "Venkatesh Iyer", "Quinton de Kock",
-        "Rahmanullah Gurbaz", "Anrich Nortje", "Angkrish Raghuvanshi", "Vaibhav Arora",
-        "Mayank Markande", "Rovman Powell", "Manish Pandey", "Spencer Johnson",
-        "Luvnith Sisodia", "Ajinkya Rahane", "Anukul Roy", "Moeen Ali",
-        "Chetan Sakariya",
+        "Ajinkya Rahane", "Rinku Singh", "Sunil Narine", "Varun Chakaravarthy",
+        "Harshit Rana", "Ramandeep Singh", "Angkrish Raghuvanshi", "Vaibhav Arora",
+        "Rovman Powell", "Manish Pandey", "Umran Malik", "Anukul Roy",
+        "Cameron Green", "Matheesha Pathirana", "Finn Allen", "Tejasvi Singh Dahiya",
+        "Kartik Tyagi", "Prashant Solanki", "Rahul Tripathi", "Tim Seifert",
+        "Sarthak Ranjan", "Daksh Kamra", "Akash Deep", "Rachin Ravindra",
     ],
     "lsg": [
-        "Nicholas Pooran", "Ravi Bishnoi", "Mayank Yadav", "Mohsin Khan",
-        "Ayush Badoni", "Rishabh Pant", "David Miller", "Aiden Markram",
-        "Mitchell Marsh", "Avesh Khan", "Abdul Samad", "Aryan Juyal", "Akash Deep",
-        "Himmat Singh", "M Siddharth", "Digvesh Singh", "Shahbaz Ahmed", "Akash Singh",
-        "Shamar Joseph", "Prince Yadav", "Yuvraj Chaudhary", "Rajvardhan Hangargekar",
-        "Arshin Kulkarni", "Matthew Breetzke",
+        "Rishabh Pant", "Nicholas Pooran", "Mayank Yadav", "Mohsin Khan",
+        "Ayush Badoni", "Abdul Samad", "Aiden Markram", "Mitchell Marsh",
+        "Avesh Khan", "Shahbaz Ahmed", "Arshin Kulkarni", "Himmat Singh",
+        "Matthew Breetzke", "M. Siddharth", "Digvesh Rathi", "Prince Yadav",
+        "Akash Singh", "Arjun Tendulkar", "Mohammed Shami", "Anrich Nortje",
+        "Wanindu Hasaranga", "Mukul Choudhary", "Naman Tiwari",
+        "Akshat Raghuvanshi", "Josh Inglis",
     ],
     "mi": [
-        "Jasprit Bumrah", "Suryakumar Yadav", "Hardik Pandya", "Rohit Sharma",
-        "Tilak Varma", "Trent Boult", "Naman Dhir", "Robin Minz", "Karn Sharma",
-        "Ryan Rickelton", "Deepak Chahar", "Will Jacks", "Ashwani Kumar",
-        "Mitchell Santner", "Reece Topley", "Shrijith Krishnan", "Raj Angad Bawa",
-        "Satanyarayana Raju", "Bevon Jacobs", "Arjun Tendulkar", "Corbin Bosch",
-        "Vignesh Puthur", "Mujeeb Ur Rahman",
+        "Rohit Sharma", "Suryakumar Yadav", "Hardik Pandya", "Jasprit Bumrah",
+        "Tilak Varma", "Trent Boult", "Robin Minz", "Ryan Rickelton",
+        "Naman Dhir", "Mitchell Santner", "Will Jacks", "Corbin Bosch",
+        "Raj Bawa", "Deepak Chahar", "Ashwani Kumar", "Raghu Sharma",
+        "Allah Ghazanfar", "Shardul Thakur", "Sherfane Rutherford",
+        "Mayank Markande", "Quinton de Kock", "Atharva Ankolekar",
+        "Mohammad Izhar", "Danish Malewar", "Mayank Rawat",
     ],
     "pk": [
-        "Shashank Singh", "Prabhsimran Singh", "Arshdeep Singh", "Shreyas Iyer",
-        "Yuzvendra Chahal", "Marcus Stoinis", "Glenn Maxwell", "Nehal Wadhera",
-        "Harpreet Brar", "Vishnu Vinod", "Vijaykumar Vyshak", "Yash Thakur",
-        "Marco Jansen", "Josh Inglis", "Lockie Ferguson", "Azmatullah Omarzai",
-        "Harnoor Pannu", "Kuldeep Sen", "Priyansh Arya", "Aaron Hardie",
-        "Musheer Khan", "Suryansh Shedge", "Xavier Bartlett", "Pyla Avinash",
-        "Praveen Dubey",
+        "Shreyas Iyer", "Arshdeep Singh", "Prabhsimran Singh", "Shashank Singh",
+        "Nehal Wadhera", "Marcus Stoinis", "Harpreet Brar", "Marco Jansen",
+        "Azmatullah Omarzai", "Lockie Ferguson", "Yuzvendra Chahal",
+        "Musheer Khan", "Priyansh Arya", "Pyla Avinash", "Harnoor Pannu",
+        "Suryansh Shedge", "Mitch Owen", "Xavier Bartlett", "Vijaykumar Vyshak",
+        "Yash Thakur", "Ben Dwarshuis", "Cooper Connolly", "Pravin Dubey",
+        "Vishal Nishad",
     ],
     "rr": [
-        "Sanju Samson", "Yashasvi Jaiswal", "Riyan Parag", "Dhruv Jurel",
-        "Shimron Hetmyer", "Sandeep Sharma", "Jofra Archer", "Maheesh Theekshana",
-        "Wanindu Hasaranga", "Akash Madhwal", "Kumar Kartikeya Singh", "Nitish Rana",
-        "Tushar Deshpande", "Shubham Dubey", "Yudhvir Charak", "Fazalhaq Farooqi",
-        "Vaibhav Suryavanshi", "Kwena Maphaka", "Kunal Rathore", "Ashok Sharma",
+        "Yashasvi Jaiswal", "Riyan Parag", "Dhruv Jurel", "Shimron Hetmyer",
+        "Ravindra Jadeja", "Jofra Archer", "Sam Curran", "Tushar Deshpande",
+        "Sandeep Sharma", "Kwena Maphaka", "Nandre Burger", "Lhuan-dre Pretorius",
+        "Donovan Ferreira", "Shubham Dubey", "Vaibhav Suryavanshi",
+        "Yudhvir Singh Charak", "Ravi Bishnoi", "Adam Milne", "Ravi Singh",
+        "Sushant Mishra", "Kuldeep Sen", "Yash Raj Punja", "Vignesh Puthur",
+        "Brijesh Sharma", "Aman Rao",
     ],
     "rcb": [
-        "Virat Kohli", "Rajat Patidar", "Yash Dayal", "Liam Livingstone",
-        "Phil Salt", "Jitesh Sharma", "Josh Hazlewood", "Rasikh Dar",
-        "Suyash Sharma", "Krunal Pandya", "Bhuvneshwar Kumar", "Swapnil Singh",
-        "Tim David", "Romario Shepherd", "Nuwan Thusara", "Manoj Bhandage",
-        "Jacob Bethell", "Devdutt Padikkal", "Swastik Chikara", "Lungi Ngidi",
-        "Abhinandan Singh", "Mohit Rathee",
+        "Virat Kohli", "Rajat Patidar", "Phil Salt", "Jitesh Sharma",
+        "Devdutt Padikkal", "Krunal Pandya", "Tim David", "Romario Shepherd",
+        "Jacob Bethell", "Josh Hazlewood", "Yash Dayal", "Bhuvneshwar Kumar",
+        "Nuwan Thushara", "Rasikh Salam", "Swapnil Singh", "Abhinandan Singh",
+        "Suyash Sharma", "Venkatesh Iyer", "Mangesh Yadav", "Jacob Duffy",
+        "Jordan Cox", "Satvik Deswal", "Vicky Ostwal", "Vihaan Malhotra",
+        "Kanishk Chouhan",
     ],
     "srh": [
-        "Heinrich Klaasen", "Pat Cummins", "Abhishek Sharma", "Travis Head",
-        "Nitish Kumar Reddy", "Mohammad Shami", "Harshal Patel", "Ishan Kishan",
-        "Rahul Chahar", "Adam Zampa", "Atharva Taide", "Abhinav Manohar",
-        "Simarjeet Singh", "Zeeshan Ansari", "Jaydev Unadkat", "Wiaan Mulder",
-        "Kamindu Mendis", "Aniket Verma", "Eshan Malinga", "Sachin Baby",
+        "Pat Cummins", "Travis Head", "Heinrich Klaasen", "Abhishek Sharma",
+        "Ishan Kishan", "Nitish Kumar Reddy", "Harshal Patel", "Jaydev Unadkat",
+        "Brydon Carse", "Kamindu Mendis", "Eshan Malinga", "Zeeshan Ansari",
+        "Aniket Verma", "R. Smaran", "Harsh Dubey", "Liam Livingstone",
+        "Jack Edwards", "Salil Arora", "Shivam Mavi", "Shivang Kumar",
+        "Krains Fuletra", "Praful Hinge", "Amit Kumar", "Onkar Tarmale",
+        "Sakib Hussain",
     ],
 }
 
