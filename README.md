@@ -26,9 +26,61 @@ Free, unlimited, self-hosted JSON API for live cricket scores, IPL 2025 data, an
 | `GET /api/ipl/teams` | All team codes |
 | `GET /healthz` | Health check |
 
-## Quick Start
+## Deploy for Free (One-Click)
 
-### Local Development
+### Vercel (Recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsurya-09-oss%2Ferbgdb)
+
+Or manually:
+
+1. Fork this repo
+2. Go to [vercel.com](https://vercel.com) and sign in with GitHub
+3. Click **"New Project"** and import this repo
+4. Vercel auto-detects the config — just click **Deploy**
+5. Your API is live at `https://your-project.vercel.app`
+
+### Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/surya-09-oss/erbgdb)
+
+Or manually:
+
+1. Go to [render.com](https://render.com) and sign in
+2. Click **"New Web Service"** and connect this repo
+3. Set:
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Choose the **Free** plan and click **Deploy**
+
+### Railway
+
+Or:
+
+1. Go to [railway.app](https://railway.app) and sign in with GitHub
+2. Click **"New Project"** → **"Deploy from GitHub repo"**
+3. Select this repo — Railway auto-detects the `Procfile`
+4. Your API is live instantly
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/github?repo=surya-09-oss/erbgdb)
+
+### Koyeb
+
+1. Go to [koyeb.com](https://www.koyeb.com) and sign in
+2. Click **"Create App"** → **"GitHub"**
+3. Select this repo and set:
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Deploy — free tier available
+
+### Docker (Self-Hosted)
+
+```bash
+docker build -t cricket-api .
+docker run -p 8000:8000 cricket-api
+```
+
+## Quick Start (Local Development)
 
 ```bash
 # Install dependencies
@@ -36,17 +88,10 @@ pip install poetry
 poetry install
 
 # Start the dev server
-poetry run fastapi dev app/main.py
+poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 Visit `http://localhost:8000` for the documentation page.
-
-### Docker
-
-```bash
-docker build -t cricket-api .
-docker run -p 8000:8000 cricket-api
-```
 
 ## Data Sources
 
