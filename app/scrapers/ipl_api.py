@@ -1,57 +1,53 @@
-"""IPL API aggregator - fetches data from the free IPL 2025 API on Render."""
+"""IPL API aggregator - fetches realtime data from Cricbuzz."""
 
-import httpx
+from app.scrapers.cricbuzz import (
+    IPL_SQUAD_MAP,
+    fetch_ipl_live_scores_from_cricbuzz,
+    fetch_ipl_points_table_from_cricbuzz,
+    fetch_ipl_schedule_from_cricbuzz,
+    fetch_ipl_squad_from_cricbuzz,
+)
 
-IPL_BASE_URL = "https://ipl-okn0.onrender.com"
+TEAM_CODES = {code: info["name"] for code, info in IPL_SQUAD_MAP.items()}
 
-TEAM_CODES = {
-    "mi": "Mumbai Indians",
-    "rcb": "Royal Challengers Bengaluru",
-    "csk": "Chennai Super Kings",
-    "dc": "Delhi Capitals",
-    "pk": "Punjab Kings",
-    "kkr": "Kolkata Knight Riders",
-    "rr": "Rajasthan Royals",
-    "srh": "Sunrisers Hyderabad",
-    "gt": "Gujarat Titans",
-    "lsg": "Lucknow Super Giants",
-}
-
-
-async def _fetch(endpoint: str) -> dict:
-    async with httpx.AsyncClient(timeout=20.0) as client:
-        try:
-            r = await client.get(f"{IPL_BASE_URL}{endpoint}")
-            r.raise_for_status()
-            return r.json()
-        except httpx.HTTPError:
-            return {"error": f"Failed to fetch {endpoint}", "status_code": 503}
-        except Exception:
-            return {"error": f"Invalid response from {endpoint}", "status_code": 502}
+# Historical IPL winners data (static, does not change)
+IPL_WINNERS = [
+    {"year": 2008, "winner": "Rajasthan Royals", "runner_up": "Chennai Super Kings"},
+    {"year": 2009, "winner": "Deccan Chargers", "runner_up": "Royal Challengers Bangalore"},
+    {"year": 2010, "winner": "Chennai Super Kings", "runner_up": "Mumbai Indians"},
+    {"year": 2011, "winner": "Chennai Super Kings", "runner_up": "Royal Challengers Bangalore"},
+    {"year": 2012, "winner": "Kolkata Knight Riders", "runner_up": "Chennai Super Kings"},
+    {"year": 2013, "winner": "Mumbai Indians", "runner_up": "Chennai Super Kings"},
+    {"year": 2014, "winner": "Kolkata Knight Riders", "runner_up": "Kings XI Punjab"},
+    {"year": 2015, "winner": "Mumbai Indians", "runner_up": "Chennai Super Kings"},
+    {"year": 2016, "winner": "Sunrisers Hyderabad", "runner_up": "Royal Challengers Bangalore"},
+    {"year": 2017, "winner": "Mumbai Indians", "runner_up": "Rising Pune Supergiant"},
+    {"year": 2018, "winner": "Chennai Super Kings", "runner_up": "Sunrisers Hyderabad"},
+    {"year": 2019, "winner": "Mumbai Indians", "runner_up": "Chennai Super Kings"},
+    {"year": 2020, "winner": "Mumbai Indians", "runner_up": "Delhi Capitals"},
+    {"year": 2021, "winner": "Chennai Super Kings", "runner_up": "Kolkata Knight Riders"},
+    {"year": 2022, "winner": "Gujarat Titans", "runner_up": "Rajasthan Royals"},
+    {"year": 2023, "winner": "Chennai Super Kings", "runner_up": "Gujarat Titans"},
+    {"year": 2024, "winner": "Kolkata Knight Riders", "runner_up": "Sunrisers Hyderabad"},
+    {"year": 2025, "winner": "Royal Challengers Bengaluru", "runner_up": "Punjab Kings"},
+]
 
 
 async def fetch_ipl_schedule() -> dict:
-    return await _fetch("/ipl-2025-schedule")
+    return await fetch_ipl_schedule_from_cricbuzz()
 
 
 async def fetch_ipl_points_table() -> dict:
-    return await _fetch("/ipl-2025-points-table")
+    return await fetch_ipl_points_table_from_cricbuzz()
 
 
 async def fetch_ipl_live_scores() -> dict:
-    return await _fetch("/ipl-2025-live-score-s3")
+    return await fetch_ipl_live_scores_from_cricbuzz()
 
 
 async def fetch_ipl_squad(team_code: str) -> dict:
-    team_code = team_code.lower().strip()
-    if team_code not in TEAM_CODES:
-        return {
-            "error": f"Invalid team code '{team_code}'",
-            "valid_codes": TEAM_CODES,
-            "status_code": 400,
-        }
-    return await _fetch(f"/squad/{team_code}")
+    return await fetch_ipl_squad_from_cricbuzz(team_code)
 
 
 async def fetch_ipl_winners() -> dict:
-    return await _fetch("/ipl-winners")
+    return {"winners": IPL_WINNERS, "total": len(IPL_WINNERS)}
