@@ -1,6 +1,7 @@
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import AsyncGenerator
+from typing import Any, AsyncGenerator, Callable, Coroutine
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +17,8 @@ from app.scrapers.ipl_api import (
     fetch_ipl_squad,
     fetch_ipl_winners,
 )
+
+logger = logging.getLogger(__name__)
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 jinja_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=True)
@@ -63,122 +66,71 @@ async def healthz() -> dict:
     return {"status": "ok"}
 
 
+async def _cached_response(
+    cache_key: str,
+    fetcher: Callable[[], Coroutine[Any, Any, dict]],
+) -> dict:
+    """Fetch data with caching. Only successful responses are cached."""
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return {
+            "status": "success",
+            "cached": True,
+            "cache_ttl_seconds": 10,
+            "data": cached,
+        }
+
+    try:
+        data = await fetcher()
+    except Exception as exc:
+        logger.exception("Fetcher failed for %s", cache_key)
+        return {
+            "status": "error",
+            "cached": False,
+            "cache_ttl_seconds": 10,
+            "data": {"error": str(exc)},
+        }
+
+    has_error = isinstance(data, dict) and "error" in data
+    if not has_error:
+        await cache.set(cache_key, data)
+    return {
+        "status": "success" if not has_error else "error",
+        "cached": False,
+        "cache_ttl_seconds": 10,
+        "data": data,
+    }
+
+
 # ---------------------------------------------------------------------------
 # IPL 2026 endpoints
 # ---------------------------------------------------------------------------
 @app.get("/api/ipl/live-scores")
 async def ipl_live_scores() -> dict:
-    cache_key = "ipl_live_scores"
-    cached = await cache.get(cache_key)
-    if cached is not None:
-        return {
-            "status": "success",
-            "cached": True,
-            "cache_ttl_seconds": 10,
-            "data": cached,
-        }
-
-    data = await fetch_ipl_live_scores()
-    if "error" not in data:
-        await cache.set(cache_key, data)
-    return {
-        "status": "success" if "error" not in data else "error",
-        "cached": False,
-        "cache_ttl_seconds": 10,
-        "data": data,
-    }
+    return await _cached_response("ipl_live_scores", fetch_ipl_live_scores)
 
 
 @app.get("/api/ipl/schedule")
 async def ipl_schedule() -> dict:
-    cache_key = "ipl_schedule"
-    cached = await cache.get(cache_key)
-    if cached is not None:
-        return {
-            "status": "success",
-            "cached": True,
-            "cache_ttl_seconds": 10,
-            "data": cached,
-        }
-
-    data = await fetch_ipl_schedule()
-    if "error" not in data:
-        await cache.set(cache_key, data)
-    return {
-        "status": "success" if "error" not in data else "error",
-        "cached": False,
-        "cache_ttl_seconds": 10,
-        "data": data,
-    }
+    return await _cached_response("ipl_schedule", fetch_ipl_schedule)
 
 
 @app.get("/api/ipl/points-table")
 async def ipl_points_table() -> dict:
-    cache_key = "ipl_points_table"
-    cached = await cache.get(cache_key)
-    if cached is not None:
-        return {
-            "status": "success",
-            "cached": True,
-            "cache_ttl_seconds": 10,
-            "data": cached,
-        }
-
-    data = await fetch_ipl_points_table()
-    if "error" not in data:
-        await cache.set(cache_key, data)
-    return {
-        "status": "success" if "error" not in data else "error",
-        "cached": False,
-        "cache_ttl_seconds": 10,
-        "data": data,
-    }
+    return await _cached_response("ipl_points_table", fetch_ipl_points_table)
 
 
 @app.get("/api/ipl/squad/{team_code}")
 async def ipl_squad(team_code: str) -> dict:
-    cache_key = f"ipl_squad_{team_code.lower()}"
-    cached = await cache.get(cache_key)
-    if cached is not None:
-        return {
-            "status": "success",
-            "cached": True,
-            "cache_ttl_seconds": 10,
-            "data": cached,
-        }
-
-    data = await fetch_ipl_squad(team_code)
-    if "error" not in data:
-        await cache.set(cache_key, data)
-    return {
-        "status": "success" if "error" not in data else "error",
-        "cached": False,
-        "cache_ttl_seconds": 10,
-        "data": data,
-    }
+    return await _cached_response(
+        f"ipl_squad_{team_code.lower()}",
+        lambda: fetch_ipl_squad(team_code),
+    )
 
 
 @app.get("/api/ipl/winners")
 async def ipl_winners() -> dict:
-    cache_key = "ipl_winners"
-    cached = await cache.get(cache_key)
-    if cached is not None:
-        return {
-            "status": "success",
-            "cached": True,
-            "cache_ttl_seconds": 10,
-            "data": cached,
-        }
-
-    data = await fetch_ipl_winners()
-    if "error" not in data:
-        await cache.set(cache_key, data)
-    return {
-        "status": "success" if "error" not in data else "error",
-        "cached": False,
-        "cache_ttl_seconds": 10,
-        "data": data,
-    }
+    return await _cached_response("ipl_winners", fetch_ipl_winners)
 
 
 @app.get("/api/ipl/teams")
