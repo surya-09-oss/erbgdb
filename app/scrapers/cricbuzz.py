@@ -54,7 +54,7 @@ async def fetch_live_matches() -> list[dict]:
         except httpx.HTTPError:
             return []
 
-    soup = BeautifulSoup(r.content, "lxml")
+    soup = BeautifulSoup(r.content, "html.parser")
     matches = []
 
     match_cards = soup.find_all("div", attrs={"class": "cb-mtch-lst cb-col cb-col-100 cb-tms-itm"})
@@ -115,7 +115,7 @@ async def fetch_match_score(match_id: str) -> dict:
         except httpx.HTTPError:
             return {"error": "Failed to fetch match data", "match_id": match_id}
 
-    soup = BeautifulSoup(r.content, "lxml")
+    soup = BeautifulSoup(r.content, "html.parser")
 
     # Title
     title = _safe_text(soup, "h1", "cb-nav-hdr cb-font-18 line-ht24")
