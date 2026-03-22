@@ -1,6 +1,8 @@
 """Cricbuzz scraper - scrapes live cricket data from Cricbuzz.com."""
 
+import asyncio
 import json
+import logging
 import random
 import re
 
@@ -9,10 +11,17 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import pytz
 
+logger = logging.getLogger(__name__)
+
 USER_AGENTS = [
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0",
 ]
 
 BASE_URL = "https://www.cricbuzz.com"
@@ -23,12 +32,24 @@ COMPLETED_STATES = {"Complete", "Abandoned", "No Result"}
 UPCOMING_STATES = {"Preview", "Upcoming"}
 
 
+MAX_RETRIES = 3
+RETRY_BACKOFF = 1.0
+
+
 def _get_headers() -> dict[str, str]:
     return {
         "User-Agent": random.choice(USER_AGENTS),
         "Cache-Control": "no-cache",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
+        "Pragma": "no-cache",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
     }
 
 
@@ -206,11 +227,27 @@ def _format_match(
 
 
 async def _fetch_cricbuzz_page(path: str) -> str:
-    """Fetch a Cricbuzz page and return the HTML text."""
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        r = await client.get(f"{BASE_URL}{path}", headers=_get_headers())
-        r.raise_for_status()
-        return r.text
+    """Fetch a Cricbuzz page with retry logic and return the HTML text."""
+    last_exc: Exception | None = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            async with httpx.AsyncClient(
+                timeout=20.0,
+                follow_redirects=True,
+                http2=False,
+            ) as client:
+                r = await client.get(f"{BASE_URL}{path}", headers=_get_headers())
+                r.raise_for_status()
+                return r.text
+        except (httpx.HTTPError, httpx.StreamError) as exc:
+            last_exc = exc
+            logger.warning(
+                "Cricbuzz fetch attempt %d/%d failed for %s: %s",
+                attempt + 1, MAX_RETRIES, path, exc,
+            )
+            if attempt < MAX_RETRIES - 1:
+                await asyncio.sleep(RETRY_BACKOFF * (attempt + 1))
+    raise last_exc or httpx.HTTPError("All retry attempts failed")
 
 
 async def fetch_live_matches() -> list[dict]:
