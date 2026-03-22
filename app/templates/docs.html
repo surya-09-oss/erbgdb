@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket API - Documentation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #111;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        header {
+            border-bottom: 3px solid #111;
+            padding-bottom: 24px;
+            margin-bottom: 40px;
+        }
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        header p {
+            font-size: 1.05rem;
+            color: #444;
+            margin-top: 8px;
+        }
+        .badge {
+            display: inline-block;
+            background: #111;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 12px;
+        }
+        .stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .stat {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .stat strong {
+            color: #111;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eee;
+        }
+        .endpoint {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .endpoint-header:hover {
+            background: #f0f0f0;
+        }
+        .method {
+            display: inline-block;
+            background: #111;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: monospace;
+            min-width: 42px;
+            text-align: center;
+        }
+        .path {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .endpoint-desc {
+            font-size: 0.85rem;
+            color: #666;
+            margin-left: auto;
+        }
+        .endpoint-body {
+            padding: 20px;
+            display: none;
+        }
+        .endpoint.open .endpoint-body {
+            display: block;
+        }
+        .endpoint.open .endpoint-header {
+            background: #f5f5f5;
+        }
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+        .param-table th {
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #666;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .param-table td {
+            padding: 8px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .param-name {
+            font-family: monospace;
+            font-weight: 600;
+        }
+        .param-required {
+            color: #c00;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        pre {
+            background: #111;
+            color: #f8f8f2;
+            padding: 16px 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 12px 0;
+        }
+        code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+        .inline-code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .team-item {
+            background: #fafafa;
+            border: 1px solid #eee;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .team-item code {
+            font-weight: 700;
+        }
+        footer {
+            margin-top: 64px;
+            padding-top: 24px;
+            border-top: 2px solid #eee;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        footer a {
+            color: #111;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        footer a:hover { text-decoration: underline; }
+        .refresh-note {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .refresh-note strong { color: #111; }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .endpoint-desc { display: none; }
+            .stats { gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cricket API</h1>
+            <p>Free, unlimited, self-hosted JSON API for live cricket scores, IPL data, and more.</p>
+            <span class="badge">v1.0</span>
+            <div class="stats">
+                <span class="stat"><strong>Auto-refresh:</strong> every 10s</span>
+                <span class="stat"><strong>Auth:</strong> None required</span>
+                <span class="stat"><strong>Format:</strong> JSON</span>
+                <span class="stat"><strong>Rate limit:</strong> Unlimited</span>
+            </div>
+        </header>
+
+        <div class="refresh-note">
+            <strong>Auto-updating cache:</strong> All data is cached and automatically refreshed every <strong>10 seconds</strong> from source APIs. You always get fresh data with zero delay.
+        </div>
+
+        <!-- GENERAL CRICKET -->
+        <h2>General Cricket</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/live-matches</span>
+                <span class="endpoint-desc">All current live matches</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns a list of all currently live cricket matches across all formats (T20, ODI, Test) and tournaments.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/live-matches</code></pre>
+                <div class="section-label">Example Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": true,
+  "cache_ttl_seconds": 10,
+  "count": 3,
+  "matches": [
+    {
+      "match_id": "12345",
+      "title": "India vs Australia, 3rd T20I",
+      "status": "In Progress",
+      "teams": [
+        {"name": "India", "score": "185/4 (20)"},
+        {"name": "Australia", "score": "92/3 (12.2)"}
+      ]
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/match-score?id={match_id}</span>
+                <span class="endpoint-desc">Detailed live score</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns detailed live score for a specific match including batters, bowlers, run rate, and match status.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Match ID from Cricbuzz (get from <span class="inline-code">/api/live-matches</span>)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl "{{ base_url }}/api/match-score?id=12345"</code></pre>
+                <div class="section-label">Example Response</div>
+                <pre><code>{
+  "status": "success",
+  "data": {
+    "match_id": "12345",
+    "title": "India vs Australia, 3rd T20I",
+    "status": "India need 42 runs in 30 balls",
+    "status_type": "in_progress",
+    "live_score": "IND 144/3 (15)",
+    "run_rate": "9.60",
+    "batters": [
+      {"name": "Virat Kohli", "runs": "68", "balls": "42", "strike_rate": "161.90"}
+    ],
+    "bowlers": [
+      {"name": "Pat Cummins", "overs": "3", "runs_conceded": "28", "wickets": "1", "economy": "9.33"}
+    ]
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- IPL 2025 -->
+        <h2>IPL 2025</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/ipl/live-scores</span>
+                <span class="endpoint-desc">IPL live scores</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns live scores for all ongoing IPL 2025 matches with the fastest update speed.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/ipl/live-scores</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/ipl/schedule</span>
+                <span class="endpoint-desc">Full match schedule</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the complete IPL 2025 match schedule with dates, teams, and venues.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/ipl/schedule</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/ipl/points-table</span>
+                <span class="endpoint-desc">Current standings</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the current IPL 2025 points table with matches, wins, losses, and points for each team.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/ipl/points-table</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/ipl/squad/{team_code}</span>
+                <span class="endpoint-desc">Team squad details</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the full squad for a specific IPL team including player roles, nationality, and captaincy info.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">team_code</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Team abbreviation code (see below)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Team Codes</div>
+                <div class="team-grid">
+                    <div class="team-item"><code>mi</code> Mumbai Indians</div>
+                    <div class="team-item"><code>csk</code> Chennai Super Kings</div>
+                    <div class="team-item"><code>rcb</code> Royal Challengers Bengaluru</div>
+                    <div class="team-item"><code>dc</code> Delhi Capitals</div>
+                    <div class="team-item"><code>kkr</code> Kolkata Knight Riders</div>
+                    <div class="team-item"><code>pk</code> Punjab Kings</div>
+                    <div class="team-item"><code>rr</code> Rajasthan Royals</div>
+                    <div class="team-item"><code>srh</code> Sunrisers Hyderabad</div>
+                    <div class="team-item"><code>gt</code> Gujarat Titans</div>
+                    <div class="team-item"><code>lsg</code> Lucknow Super Giants</div>
+                </div>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/ipl/squad/mi</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/ipl/winners</span>
+                <span class="endpoint-desc">Historical IPL winners</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the list of all IPL winners from 2008 onwards with runner-up, venue, and margin of victory.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/ipl/winners</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/ipl/teams</span>
+                <span class="endpoint-desc">All team codes</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the list of all IPL team codes and their full names. Use these codes with the squad endpoint.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/ipl/teams</code></pre>
+            </div>
+        </div>
+
+        <!-- UTILITY -->
+        <h2>Utility</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/healthz</span>
+                <span class="endpoint-desc">Health check</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns server health status. Use this to check if the API is running.</p>
+                <pre><code>{"status": "ok"}</code></pre>
+            </div>
+        </div>
+
+        <footer>
+            <p>Data sourced from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a> and <a href="https://github.com/cu-sanjay/IPL-2025-API-Free" target="_blank">IPL 2025 API</a>.</p>
+            <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited.</p>
+        </footer>
+    </div>
+</body>
+</html>
