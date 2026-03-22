@@ -81,7 +81,8 @@ async def live_matches() -> dict:
         }
 
     data = await fetch_live_matches()
-    await cache.set(cache_key, data)
+    if data:  # don't cache empty list from a failed fetch
+        await cache.set(cache_key, data)
     return {
         "status": "success",
         "cached": False,
