@@ -1,19 +1,17 @@
-[tool.poetry]
+[project]
 name = "app"
 version = "0.1.0"
-description = ""
-authors = ["Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>"]
+description = "Free, unlimited, self-hosted JSON API for live cricket scores and IPL data."
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12"
-fastapi = {extras = ["standard"], version = "^0.135.1"}
-httpx = "^0.28.1"
-beautifulsoup4 = "^4.14.3"
-jinja2 = "^3.1.6"
-pytz = "^2026.1.post1"
-
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.135.1",
+    "httpx>=0.28.1",
+    "beautifulsoup4>=4.14.3",
+    "jinja2>=3.1.6",
+    "pytz>=2026.1",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
