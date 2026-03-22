@@ -255,6 +255,275 @@ async def fetch_running_matches() -> list[dict]:
     return [m for m in all_matches if m.get("state") in LIVE_STATES]
 
 
+def _extract_rsc_json(html_text: str, key: str) -> dict | None:
+    """Extract a JSON object containing `key` from Cricbuzz Next.js RSC payload."""
+    soup = BeautifulSoup(html_text, "lxml")
+    scripts = soup.find_all("script")
+    for script in scripts:
+        if not script.string or key not in script.string:
+            continue
+        rsc_chunks = re.findall(
+            r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', script.string, re.DOTALL
+        )
+        for raw in rsc_chunks:
+            unescaped = raw.replace('\\"', '"').replace("\\\\", "\\").replace("\\n", "\n")
+            idx = unescaped.find(f'"{key}"')
+            if idx < 0:
+                continue
+            start = unescaped.rfind("{", max(0, idx - 1000), idx)
+            if start < 0:
+                continue
+            bracket_count = 0
+            end_pos = start
+            for j in range(start, min(len(unescaped), start + 500000)):
+                c = unescaped[j]
+                if c == "{":
+                    bracket_count += 1
+                elif c == "}":
+                    bracket_count -= 1
+                    if bracket_count == 0:
+                        end_pos = j + 1
+                        break
+            try:
+                return json.loads(unescaped[start:end_pos])
+            except json.JSONDecodeError:
+                continue
+    return None
+
+
+# ---------------------------------------------------------------------------
+# IPL series constants
+# ---------------------------------------------------------------------------
+IPL_SERIES_ID = 9237
+IPL_SERIES_SLUG = "indian-premier-league-2025"
+
+# Mapping of short team codes to Cricbuzz squad IDs and full names
+IPL_SQUAD_MAP: dict[str, dict] = {
+    "csk": {"squad_id": 56913, "team_id": 58, "name": "Chennai Super Kings"},
+    "rr": {"squad_id": 56917, "team_id": 64, "name": "Rajasthan Royals"},
+    "kkr": {"squad_id": 56921, "team_id": 63, "name": "Kolkata Knight Riders"},
+    "srh": {"squad_id": 56925, "team_id": 255, "name": "Sunrisers Hyderabad"},
+    "rcb": {"squad_id": 56929, "team_id": 59, "name": "Royal Challengers Bengaluru"},
+    "dc": {"squad_id": 56933, "team_id": 61, "name": "Delhi Capitals"},
+    "pk": {"squad_id": 56941, "team_id": 65, "name": "Punjab Kings"},
+    "mi": {"squad_id": 56949, "team_id": 62, "name": "Mumbai Indians"},
+    "gt": {"squad_id": 56957, "team_id": 971, "name": "Gujarat Titans"},
+    "lsg": {"squad_id": 56965, "team_id": 966, "name": "Lucknow Super Giants"},
+}
+
+
+async def fetch_ipl_schedule_from_cricbuzz() -> dict:
+    """Fetch the IPL schedule from Cricbuzz series page."""
+    try:
+        html = await _fetch_cricbuzz_page(
+            f"/cricket-series/{IPL_SERIES_ID}/{IPL_SERIES_SLUG}/matches"
+        )
+    except httpx.HTTPError:
+        return {"error": "Failed to fetch IPL schedule from Cricbuzz", "status_code": 503}
+
+    data = _extract_rsc_json(html, "matchDetails")
+    if not data:
+        return {"error": "Could not parse IPL schedule data", "status_code": 502}
+
+    matches_data = data.get("matchesData", data)
+    match_details = matches_data.get("matchDetails", [])
+
+    schedule: list[dict] = []
+    for entry in match_details:
+        if not isinstance(entry, dict):
+            continue
+        mdm = entry.get("matchDetailsMap", {})
+        date_key = mdm.get("key", "")
+        for m in mdm.get("match", []):
+            info = m.get("matchInfo", {})
+            score = m.get("matchScore", {})
+            team1 = info.get("team1", {})
+            team2 = info.get("team2", {})
+            t1_score = _format_score(score.get("team1Score", {}))
+            t2_score = _format_score(score.get("team2Score", {}))
+            venue = info.get("venueInfo", {})
+            schedule.append({
+                "match_id": str(info.get("matchId", "")),
+                "date": date_key,
+                "match_desc": info.get("matchDesc", ""),
+                "status": info.get("status", ""),
+                "state": info.get("state", ""),
+                "team1": {
+                    "name": team1.get("teamName", ""),
+                    "short_name": team1.get("teamSName", ""),
+                    "score": t1_score,
+                },
+                "team2": {
+                    "name": team2.get("teamName", ""),
+                    "short_name": team2.get("teamSName", ""),
+                    "score": t2_score,
+                },
+                "venue": f"{venue.get('ground', '')}, {venue.get('city', '')}" if venue else None,
+                "start_date": _timestamp_to_ist(info.get("startDate", "")),
+            })
+
+    return {"series": "Indian Premier League 2025", "matches": schedule, "total": len(schedule)}
+
+
+async def fetch_ipl_points_table_from_cricbuzz() -> dict:
+    """Fetch the IPL points table from Cricbuzz series page."""
+    try:
+        html = await _fetch_cricbuzz_page(
+            f"/cricket-series/{IPL_SERIES_ID}/{IPL_SERIES_SLUG}/points-table"
+        )
+    except httpx.HTTPError:
+        return {"error": "Failed to fetch IPL points table from Cricbuzz", "status_code": 503}
+
+    data = _extract_rsc_json(html, "pointsTable")
+    if not data:
+        return {"error": "Could not parse IPL points table data", "status_code": 502}
+
+    pts_data = data.get("pointsTableData", data)
+    points_table_list = pts_data.get("pointsTable", [])
+
+    teams: list[dict] = []
+    for group in points_table_list:
+        for team_info in group.get("pointsTableInfo", []):
+            teams.append({
+                "team": team_info.get("teamFullName", ""),
+                "short_name": team_info.get("teamName", ""),
+                "played": team_info.get("matchesPlayed", 0),
+                "won": team_info.get("matchesWon", 0),
+                "lost": team_info.get("matchesLost", 0),
+                "tied": team_info.get("matchesTied", 0),
+                "no_result": team_info.get("noRes", 0),
+                "nrr": team_info.get("nrr", "0.000"),
+                "points": team_info.get("points", 0),
+            })
+
+    return {
+        "series": pts_data.get("seriesName", "Indian Premier League 2025"),
+        "teams": teams,
+        "total": len(teams),
+    }
+
+
+async def fetch_ipl_live_scores_from_cricbuzz() -> dict:
+    """Fetch live IPL match scores from Cricbuzz."""
+    all_matches = await fetch_live_matches()
+    ipl_matches = [
+        m for m in all_matches
+        if "indian premier league" in m.get("series", "").lower()
+        or "ipl" in m.get("series", "").lower()
+    ]
+    return {
+        "series": "Indian Premier League 2025",
+        "matches": ipl_matches,
+        "total": len(ipl_matches),
+    }
+
+
+# IPL 2025 squad data (static for the season, sourced from official announcements)
+IPL_SQUADS: dict[str, list[str]] = {
+    "csk": [
+        "Ruturaj Gaikwad", "Matheesha Pathirana", "Shivam Dube", "Ravindra Jadeja",
+        "MS Dhoni", "Devon Conway", "Rahul Tripathi", "Rachin Ravindra", "R. Ashwin",
+        "Khaleel Ahmed", "Noor Ahmad", "Vijay Shankar", "Sam Curran", "Shaik Rasheed",
+        "Anshul Kamboj", "Mukesh Chaudhary", "Deepak Hooda", "Gurjapneet Singh",
+        "Nathan Ellis", "Jamie Overton", "Kamlesh Nagarkoti", "Ramakrishna Ghosh",
+        "Shreyas Gopal", "Vansh Bedi", "Andre Siddharth",
+    ],
+    "dc": [
+        "Axar Patel", "Kuldeep Yadav", "Tristan Stubbs", "Abishek Porel",
+        "Mitchell Starc", "KL Rahul", "Jake Fraser-McGurk", "T. Natarajan",
+        "Karun Nair", "Sameer Rizvi", "Ashutosh Sharma", "Mohit Sharma",
+        "Faf du Plessis", "Mukesh Kumar", "Darshan Nalkande", "Vipraj Nigam",
+        "Dushmantha Chameera", "Donovan Ferreira", "Ajay Mandal", "Manvanth Kumar",
+        "Tripurana Vijay", "Madhav Tiwari",
+    ],
+    "gt": [
+        "Rashid Khan", "Shubman Gill", "Sai Sudharsan", "Rahul Tewatia",
+        "Shahrukh Khan", "Kagiso Rabada", "Jos Buttler", "Mohammed Siraj",
+        "Prasidh Krishna", "Nishant Sindhu", "Mahipal Lomror", "Kumar Kushagra",
+        "Anuj Rawat", "Manav Sutar", "Washington Sundar", "Gerald Coetzee",
+        "Arshad Khan", "Gurnoor Brar", "Sherfane Rutherford", "Sai Kishore",
+        "Ishant Sharma", "Jayant Yadav", "Glenn Phillips", "Karim Janat",
+        "Kulwant Khejroliya",
+    ],
+    "kkr": [
+        "Rinku Singh", "Varun Chakaravarthy", "Sunil Narine", "Andre Russell",
+        "Harshit Rana", "Ramandeep Singh", "Venkatesh Iyer", "Quinton de Kock",
+        "Rahmanullah Gurbaz", "Anrich Nortje", "Angkrish Raghuvanshi", "Vaibhav Arora",
+        "Mayank Markande", "Rovman Powell", "Manish Pandey", "Spencer Johnson",
+        "Luvnith Sisodia", "Ajinkya Rahane", "Anukul Roy", "Moeen Ali",
+        "Chetan Sakariya",
+    ],
+    "lsg": [
+        "Nicholas Pooran", "Ravi Bishnoi", "Mayank Yadav", "Mohsin Khan",
+        "Ayush Badoni", "Rishabh Pant", "David Miller", "Aiden Markram",
+        "Mitchell Marsh", "Avesh Khan", "Abdul Samad", "Aryan Juyal", "Akash Deep",
+        "Himmat Singh", "M Siddharth", "Digvesh Singh", "Shahbaz Ahmed", "Akash Singh",
+        "Shamar Joseph", "Prince Yadav", "Yuvraj Chaudhary", "Rajvardhan Hangargekar",
+        "Arshin Kulkarni", "Matthew Breetzke",
+    ],
+    "mi": [
+        "Jasprit Bumrah", "Suryakumar Yadav", "Hardik Pandya", "Rohit Sharma",
+        "Tilak Varma", "Trent Boult", "Naman Dhir", "Robin Minz", "Karn Sharma",
+        "Ryan Rickelton", "Deepak Chahar", "Will Jacks", "Ashwani Kumar",
+        "Mitchell Santner", "Reece Topley", "Shrijith Krishnan", "Raj Angad Bawa",
+        "Satanyarayana Raju", "Bevon Jacobs", "Arjun Tendulkar", "Corbin Bosch",
+        "Vignesh Puthur", "Mujeeb Ur Rahman",
+    ],
+    "pk": [
+        "Shashank Singh", "Prabhsimran Singh", "Arshdeep Singh", "Shreyas Iyer",
+        "Yuzvendra Chahal", "Marcus Stoinis", "Glenn Maxwell", "Nehal Wadhera",
+        "Harpreet Brar", "Vishnu Vinod", "Vijaykumar Vyshak", "Yash Thakur",
+        "Marco Jansen", "Josh Inglis", "Lockie Ferguson", "Azmatullah Omarzai",
+        "Harnoor Pannu", "Kuldeep Sen", "Priyansh Arya", "Aaron Hardie",
+        "Musheer Khan", "Suryansh Shedge", "Xavier Bartlett", "Pyla Avinash",
+        "Praveen Dubey",
+    ],
+    "rr": [
+        "Sanju Samson", "Yashasvi Jaiswal", "Riyan Parag", "Dhruv Jurel",
+        "Shimron Hetmyer", "Sandeep Sharma", "Jofra Archer", "Maheesh Theekshana",
+        "Wanindu Hasaranga", "Akash Madhwal", "Kumar Kartikeya Singh", "Nitish Rana",
+        "Tushar Deshpande", "Shubham Dubey", "Yudhvir Charak", "Fazalhaq Farooqi",
+        "Vaibhav Suryavanshi", "Kwena Maphaka", "Kunal Rathore", "Ashok Sharma",
+    ],
+    "rcb": [
+        "Virat Kohli", "Rajat Patidar", "Yash Dayal", "Liam Livingstone",
+        "Phil Salt", "Jitesh Sharma", "Josh Hazlewood", "Rasikh Dar",
+        "Suyash Sharma", "Krunal Pandya", "Bhuvneshwar Kumar", "Swapnil Singh",
+        "Tim David", "Romario Shepherd", "Nuwan Thusara", "Manoj Bhandage",
+        "Jacob Bethell", "Devdutt Padikkal", "Swastik Chikara", "Lungi Ngidi",
+        "Abhinandan Singh", "Mohit Rathee",
+    ],
+    "srh": [
+        "Heinrich Klaasen", "Pat Cummins", "Abhishek Sharma", "Travis Head",
+        "Nitish Kumar Reddy", "Mohammad Shami", "Harshal Patel", "Ishan Kishan",
+        "Rahul Chahar", "Adam Zampa", "Atharva Taide", "Abhinav Manohar",
+        "Simarjeet Singh", "Zeeshan Ansari", "Jaydev Unadkat", "Wiaan Mulder",
+        "Kamindu Mendis", "Aniket Verma", "Eshan Malinga", "Sachin Baby",
+    ],
+}
+
+
+async def fetch_ipl_squad_from_cricbuzz(team_code: str) -> dict:
+    """Return IPL team squad data."""
+    team_code = team_code.lower().strip()
+    if team_code not in IPL_SQUAD_MAP:
+        return {
+            "error": f"Invalid team code '{team_code}'",
+            "valid_codes": list(IPL_SQUAD_MAP.keys()),
+            "status_code": 400,
+        }
+
+    team_info = IPL_SQUAD_MAP[team_code]
+    players = [{"name": name} for name in IPL_SQUADS.get(team_code, [])]
+
+    return {
+        "team": team_info["name"],
+        "team_code": team_code,
+        "players": players,
+        "total": len(players),
+    }
+
+
 async def fetch_match_score(match_id: str) -> dict:
     """Fetch detailed live score for a specific match from Cricbuzz."""
     async with httpx.AsyncClient(timeout=15.0) as client:
