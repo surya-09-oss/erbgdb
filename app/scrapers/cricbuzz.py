@@ -1,10 +1,16 @@
-"""Cricbuzz scraper - scrapes live cricket data from Cricbuzz.com."""
+"""Cricbuzz scraper - scrapes live cricket data from Cricbuzz.com.
 
+Cricbuzz migrated to a Next.js / React Server Components architecture.
+Match data is now embedded in RSC script payloads as JSON objects, which
+is far more reliable than scraping HTML class names.
+"""
+
+import json
 import random
+import re
+
 import httpx
 from bs4 import BeautifulSoup
-from datetime import datetime
-import pytz
 
 USER_AGENTS = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -24,83 +30,170 @@ def _get_headers() -> dict[str, str]:
     }
 
 
-def _safe_text(soup: BeautifulSoup, selector: str, class_name: str, index: int = 0) -> str | None:
-    elements = soup.find_all(selector, attrs={"class": class_name})
-    if elements and len(elements) > index:
-        return elements[index].text.strip()
+def _extract_json_object(text: str, start: int) -> dict | None:
+    """Extract a complete JSON object starting at *start* (must point to '{')."""
+    depth = 0
+    for i in range(start, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(text[start : i + 1])
+                except json.JSONDecodeError:
+                    return None
     return None
 
 
-def _parse_match_date(soup: BeautifulSoup) -> str | None:
-    element = soup.find("span", itemprop="startDate")
-    if element:
-        match_time = element.get("content", "")
+def _extract_rsc_payloads(page_text: str) -> list[str]:
+    """Extract and unescape all RSC script payloads from the page."""
+    raw = re.findall(
+        r'self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)', page_text
+    )
+    results = []
+    for payload in raw:
         try:
-            aware_time = datetime.fromisoformat(match_time)
-            ist = pytz.timezone("Asia/Kolkata")
-            local_time = aware_time.astimezone(ist)
-            return local_time.strftime("%Y-%m-%d %I:%M:%S %p IST")
-        except (ValueError, IndexError):
-            return None
+            results.append(payload.encode().decode("unicode_escape"))
+        except (UnicodeDecodeError, ValueError):
+            continue
+    return results
+
+
+def _extract_miniscore(page_text: str) -> dict | None:
+    """Extract the ``miniscore`` JSON object from Cricbuzz RSC script payloads."""
+    for unescaped in _extract_rsc_payloads(page_text):
+        if "miniscore" not in unescaped:
+            continue
+        ms_match = re.search(r'"miniscore"\s*:\s*\{', unescaped)
+        if not ms_match:
+            continue
+        obj = _extract_json_object(unescaped, ms_match.end() - 1)
+        if obj:
+            return obj
     return None
+
+
+def _extract_match_list(page_text: str) -> list[dict]:
+    """Extract matchInfo + matchScore pairs from the live-scores RSC payloads.
+
+    Returns a list of dicts, each with ``matchInfo`` and optionally ``matchScore``.
+    """
+    matches: list[dict] = []
+    seen_ids: set[int] = set()
+
+    for unescaped in _extract_rsc_payloads(page_text):
+        if "matchInfo" not in unescaped:
+            continue
+        for m in re.finditer(r'"matchInfo"\s*:\s*\{', unescaped):
+            info_obj = _extract_json_object(unescaped, m.end() - 1)
+            if not info_obj:
+                continue
+            mid = info_obj.get("matchId")
+            if mid is None or mid in seen_ids:
+                continue
+            seen_ids.add(mid)
+
+            entry: dict = {"matchInfo": info_obj}
+
+            # Look for matchScore right after matchInfo
+            after_info = unescaped[m.end() - 1:]
+            depth = 0
+            end_pos = 0
+            for j, c in enumerate(after_info):
+                if c == "{":
+                    depth += 1
+                elif c == "}":
+                    depth -= 1
+                    if depth == 0:
+                        end_pos = j + 1
+                        break
+
+            remainder = after_info[end_pos:]
+            score_m = re.search(r'"matchScore"\s*:\s*\{', remainder[:200])
+            if score_m:
+                score_obj = _extract_json_object(remainder, score_m.end() - 1)
+                if score_obj:
+                    entry["matchScore"] = score_obj
+
+            matches.append(entry)
+
+    return matches
+
+
+def _format_innings_score(team_name: str, innings: dict) -> str:
+    """Format an innings score like 'IND 164/5 (20)'."""
+    runs = innings.get("runs", "")
+    wkts = innings.get("wickets")
+    overs = innings.get("overs", "")
+    score_str = str(runs)
+    if wkts is not None:
+        score_str += f"/{wkts}"
+    return f"{team_name} {score_str} ({overs})"
 
 
 async def fetch_live_matches() -> list[dict]:
     """Fetch all current live cricket matches from Cricbuzz."""
     async with httpx.AsyncClient(timeout=15.0) as client:
         try:
-            r = await client.get(f"{BASE_URL}/cricket-match/live-scores", headers=_get_headers())
+            r = await client.get(
+                f"{BASE_URL}/cricket-match/live-scores", headers=_get_headers()
+            )
             r.raise_for_status()
         except httpx.HTTPError:
             return []
 
-    soup = BeautifulSoup(r.content, "html.parser")
-    matches = []
+    match_list = _extract_match_list(r.text)
+    results = []
 
-    match_cards = soup.find_all("div", attrs={"class": "cb-mtch-lst cb-col cb-col-100 cb-tms-itm"})
-    for card in match_cards:
-        try:
-            title_el = card.find("h3", attrs={"class": "cb-lv-scr-mtch-hdr"})
-            title = title_el.text.strip() if title_el else None
+    for entry in match_list:
+        info = entry["matchInfo"]
+        score_data = entry.get("matchScore", {})
 
-            link_el = card.find("a", attrs={"class": "cb-lv-scrs-well"}) or card.find("a")
-            match_id = None
-            if link_el and link_el.get("href"):
-                href = link_el["href"]
-                parts = href.split("/")
-                for i, part in enumerate(parts):
-                    if part == "live-cricket-scores" and i + 1 < len(parts):
-                        match_id = parts[i + 1]
-                        break
+        match_id = str(info.get("matchId", ""))
+        series = info.get("seriesName", "")
+        match_desc = info.get("matchDesc", "")
+        title = f"{series}, {match_desc}" if series and match_desc else series or match_desc
 
-            status_el = card.find("div", attrs={"class": "cb-text-live"}) or \
-                        card.find("div", attrs={"class": "cb-text-complete"}) or \
-                        card.find("div", attrs={"class": "cb-text-inprogress"}) or \
-                        card.find("div", attrs={"class": "cb-text-stumps"})
-            status = status_el.text.strip() if status_el else "Unknown"
+        team1 = info.get("team1", {})
+        team2 = info.get("team2", {})
+        status = info.get("status", "Unknown")
+        state = info.get("state", "")
 
-            score_items = card.find_all("div", attrs={"class": "cb-col-100 cb-scr-wll-chvrn"})
-            teams = []
-            for item in score_items:
-                team_name_el = item.find("div", attrs={"class": "cb-hmscg-tm-nm"})
-                score_el = item.find("div", attrs={"class": "cb-hmscg-tm-nm cb-font-bold"}) or \
-                           item.find("span", attrs={"class": "cb-font-20"})
-                team_name = team_name_el.text.strip() if team_name_el else None
-                score = score_el.text.strip() if score_el else None
-                if team_name:
-                    teams.append({"name": team_name, "score": score})
+        teams = []
+        t1_score = score_data.get("team1Score", {})
+        t2_score = score_data.get("team2Score", {})
 
-            if title or match_id:
-                matches.append({
-                    "match_id": match_id,
-                    "title": title,
-                    "status": status,
-                    "teams": teams,
-                })
-        except (AttributeError, IndexError):
-            continue
+        t1_name = team1.get("teamSName") or team1.get("teamName", "")
+        t2_name = team2.get("teamSName") or team2.get("teamName", "")
 
-    return matches
+        t1_inngs = t1_score.get("inngs1", {})
+        if t1_inngs:
+            teams.append({
+                "name": t1_name,
+                "score": _format_innings_score(t1_name, t1_inngs),
+            })
+        else:
+            teams.append({"name": t1_name, "score": None})
+
+        t2_inngs = t2_score.get("inngs1", {})
+        if t2_inngs:
+            teams.append({
+                "name": t2_name,
+                "score": _format_innings_score(t2_name, t2_inngs),
+            })
+        else:
+            teams.append({"name": t2_name, "score": None})
+
+        results.append({
+            "match_id": match_id,
+            "title": title,
+            "status": status,
+            "state": state,
+            "teams": teams,
+        })
+
+    return results
 
 
 async def fetch_match_score(match_id: str) -> dict:
@@ -115,99 +208,96 @@ async def fetch_match_score(match_id: str) -> dict:
         except httpx.HTTPError:
             return {"error": "Failed to fetch match data", "match_id": match_id}
 
+    page_text = r.text
     soup = BeautifulSoup(r.content, "html.parser")
 
-    # Title
-    title = _safe_text(soup, "h1", "cb-nav-hdr cb-font-18 line-ht24")
-    if title:
-        title = title.replace(", Commentary", "")
+    # --- title ---
+    h1 = soup.find("h1")
+    title = None
+    if h1:
+        title = h1.text.strip()
+        for suffix in [" - Commentary", ", Commentary"]:
+            if title.endswith(suffix):
+                title = title[: -len(suffix)]
 
-    # Status detection
-    status_classes = [
-        ("cb-col cb-col-100 cb-min-stts cb-text-complete", "completed"),
-        ("cb-text-inprogress", "in_progress"),
-        ("cb-col cb-col-100 cb-font-18 cb-toss-sts cb-text-abandon", "abandoned"),
-        ("cb-text-stumps", "stumps"),
-        ("cb-text-lunch", "lunch"),
-        ("cb-text-inningsbreak", "innings_break"),
-        ("cb-text-tea", "tea"),
-        ("cb-text-rain", "rain_delay"),
-        ("cb-text-wetoutfield", "wet_outfield"),
-    ]
+    # --- miniscore ---
+    ms = _extract_miniscore(page_text)
 
-    status_text = None
-    status_type = "upcoming"
-    for cls, stype in status_classes:
-        text = _safe_text(soup, "div", cls)
-        if text:
-            status_text = text
-            status_type = stype
-            break
+    if ms is None:
+        return {
+            "match_id": match_id,
+            "title": title,
+            "status": "Match Stats will Update Soon",
+            "status_type": "upcoming",
+            "live_score": None,
+            "run_rate": None,
+            "match_date": None,
+            "batters": [],
+            "bowlers": [],
+        }
 
-    if not status_text:
-        match_date = _parse_match_date(soup)
-        if match_date:
-            status_text = f"Starts at {match_date}"
-            status_type = "upcoming"
-        else:
-            status_text = "Match Stats will Update Soon"
+    # --- status ---
+    msd = ms.get("matchScoreDetails", {})
+    status_text = msd.get("customStatus") or ms.get("status") or "Match Stats will Update Soon"
+    state = msd.get("state", "")
 
-    # Live score
-    live_score_el = soup.find("span", attrs={"class": "cb-font-20 text-bold"})
-    live_score = live_score_el.text.strip() if live_score_el else None
+    status_type_map = {
+        "Complete": "completed",
+        "In Progress": "in_progress",
+        "Preview": "upcoming",
+        "Abandoned": "abandoned",
+        "Stumps": "stumps",
+    }
+    status_type = status_type_map.get(state, "in_progress" if state else "upcoming")
 
-    # Run rate
-    run_rate_el = soup.find_all("span", attrs={"class": "cb-font-12 cb-text-gray"})
-    run_rate = None
-    if run_rate_el:
-        run_rate = run_rate_el[0].text.strip().replace("CRR:\xa0", "")
+    # --- live score ---
+    bat_team = ms.get("batTeam", {})
+    team_name = (
+        ms.get("batTeamScoreObj", {}).get("teamName")
+        or bat_team.get("teamName")
+        or bat_team.get("teamId", "")
+    )
+    team_score = bat_team.get("teamScore", "")
+    team_wkts = bat_team.get("teamWkts")
+    overs = ms.get("overs", "")
 
-    # Batsmen
+    live_score = None
+    if team_score != "" or team_wkts is not None:
+        score_str = str(team_score)
+        if team_wkts is not None:
+            score_str += f"/{team_wkts}"
+        live_score = f"{team_name} {score_str} ({overs})"
+
+    # --- run rate ---
+    crr = ms.get("currentRunRate")
+    run_rate = str(crr) if crr else None
+
+    # --- batters ---
     batters = []
-    try:
-        bat_names = soup.find_all("div", attrs={"class": "cb-col cb-col-50"})
-        bat_runs = soup.find_all("div", attrs={"class": "cb-col cb-col-10 ab text-right"})
-        bat_sr = soup.find_all("div", attrs={"class": "cb-col cb-col-14 ab text-right"})
+    for key in ("batsmanStriker", "batsmanNonStriker"):
+        player = ms.get(key, {})
+        if player.get("id", 0) == 0 and not player.get("name"):
+            continue
+        batters.append({
+            "name": player.get("name", ""),
+            "runs": str(player.get("runs", 0)),
+            "balls": str(player.get("balls", 0)),
+            "strike_rate": str(player.get("strikeRate", "0.00")),
+        })
 
-        for i in range(2):
-            name_idx = i + 1
-            run_idx = i * 2
-            ball_idx = i * 2 + 1
-            if len(bat_names) > name_idx and len(bat_runs) > ball_idx and len(bat_sr) > i:
-                batters.append({
-                    "name": bat_names[name_idx].text.strip(),
-                    "runs": bat_runs[run_idx].text.strip(),
-                    "balls": bat_runs[ball_idx].text.strip(),
-                    "strike_rate": bat_sr[i].text.strip(),
-                })
-    except (IndexError, AttributeError):
-        pass
-
-    # Bowlers
+    # --- bowlers ---
     bowlers = []
-    try:
-        bowl_names = soup.find_all("div", attrs={"class": "cb-col cb-col-50"})
-        bowl_overs = soup.find_all("div", attrs={"class": "cb-col cb-col-10 text-right"})
-        bowl_eco = soup.find_all("div", attrs={"class": "cb-col cb-col-14 text-right"})
-        bowl_wickets = soup.find_all("div", attrs={"class": "cb-col cb-col-8 text-right"})
-
-        for i in range(2):
-            name_idx = i + 4
-            over_idx = i * 2 + 4
-            run_idx = i * 2 + 5
-            eco_idx = i + 2
-            wkt_idx = i * 2 + 5
-            if (len(bowl_names) > name_idx and len(bowl_overs) > run_idx
-                    and len(bowl_eco) > eco_idx and len(bowl_wickets) > wkt_idx):
-                bowlers.append({
-                    "name": bowl_names[name_idx].text.strip(),
-                    "overs": bowl_overs[over_idx].text.strip(),
-                    "runs_conceded": bowl_overs[run_idx].text.strip(),
-                    "wickets": bowl_wickets[wkt_idx].text.strip(),
-                    "economy": bowl_eco[eco_idx].text.strip(),
-                })
-    except (IndexError, AttributeError):
-        pass
+    for key in ("bowlerStriker", "bowlerNonStriker"):
+        player = ms.get(key, {})
+        if player.get("id", 0) == 0 and not player.get("name"):
+            continue
+        bowlers.append({
+            "name": player.get("name", ""),
+            "overs": str(player.get("overs", 0)),
+            "runs_conceded": str(player.get("runs", 0)),
+            "wickets": str(player.get("wickets", 0)),
+            "economy": str(player.get("economy", "0.00")),
+        })
 
     return {
         "match_id": match_id,
@@ -216,7 +306,7 @@ async def fetch_match_score(match_id: str) -> dict:
         "status_type": status_type,
         "live_score": live_score,
         "run_rate": run_rate,
-        "match_date": _parse_match_date(soup),
+        "match_date": None,
         "batters": batters,
         "bowlers": bowlers,
     }
