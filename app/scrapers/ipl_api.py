@@ -1,4 +1,4 @@
-"""IPL API aggregator - fetches data from the free IPL 2025 API on Render."""
+"""IPL API aggregator - fetches data from the free IPL 2026 API on Render."""
 
 import httpx
 
