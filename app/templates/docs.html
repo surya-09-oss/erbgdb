@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket API - Documentation</title>
+    <title>IPL 2026 API - Documentation</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -218,9 +218,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>Cricket API</h1>
-            <p>Free, unlimited, self-hosted JSON API for live cricket scores, IPL data, and more. Compatible with <a href="https://github.com/sanwebinfo/cricket-api" target="_blank" style="color:#111;font-weight:600">sanwebinfo/cricket-api</a>.</p>
-            <span class="badge">v2.0</span>
+            <h1>IPL 2026 API</h1>
+            <p>Free, unlimited, self-hosted JSON API for IPL 2026 data.</p>
+            <span class="badge">v1.0</span>
             <div class="stats">
                 <span class="stat"><strong>Auto-refresh:</strong> every 10s</span>
                 <span class="stat"><strong>Auth:</strong> None required</span>
@@ -230,183 +230,11 @@
         </header>
 
         <div class="refresh-note">
-            <strong>Auto-updating background task:</strong> A background task automatically fetches and caches live match data from Cricbuzz every <strong>10 seconds</strong>. All endpoints use a 10-second TTL cache, so you always get fresh data with zero delay.
+            <strong>Auto-updating cache:</strong> All data is cached and automatically refreshed every <strong>10 seconds</strong> from source APIs. You always get fresh data with zero delay.
         </div>
 
-        <!-- CRICKET-API COMPATIBLE -->
-        <h2>Cricket-API Compatible</h2>
-        <p style="margin-bottom:16px;color:#555;font-size:0.9rem">Drop-in replacement for <a href="https://github.com/sanwebinfo/cricket-api" target="_blank" style="color:#111;font-weight:600">sanwebinfo/cricket-api</a>. Same JSON format, auto-updating.</p>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/score?id={match_id}</span>
-                <span class="endpoint-desc">Flat JSON score</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns match score in the flat JSON format used by cricket-api. Copy the match ID from Cricbuzz live match URL or from <span class="inline-code">/api/live-matches</span>.</p>
-                <table class="param-table">
-                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
-                    <tr>
-                        <td><span class="param-name">id</span> <span class="param-required">required</span></td>
-                        <td>string</td>
-                        <td>Match ID from Cricbuzz</td>
-                    </tr>
-                </table>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl "{{ base_url }}/score?id=12345"</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "title": "India vs Australia, 3rd T20I - Live Cricket Score",
-  "update": "India need 42 runs in 30 balls",
-  "livescore": "IND 144/3 (15)",
-  "runrate": "CRR: 9.60",
-  "batterone": "Virat Kohli",
-  "batsmanonerun": "68",
-  "batsmanoneball": "(42)",
-  "batsmanonesr": "161.90",
-  "battertwo": "KL Rahul",
-  "batsmantworun": "22",
-  "batsmantwoball": "(18)",
-  "batsmantwosr": "122.22",
-  "bowlerone": "Pat Cummins",
-  "bowleroneover": "3",
-  "bowleronerun": "28",
-  "bowleronewickers": "1",
-  "bowleroneeconomy": "9.33",
-  "bowlertwo": "Mitchell Starc",
-  "bowlertwoover": "4",
-  "bowlertworun": "35",
-  "bowlertwowickers": "2",
-  "bowlertwoeconomy": "8.75"
-}</code></pre>
-            </div>
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/score/live?id={match_id}</span>
-                <span class="endpoint-desc">Nested JSON score</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns match score in the nested JSON format used by cricket-api's <span class="inline-code">/score/live</span> endpoint.</p>
-                <table class="param-table">
-                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
-                    <tr>
-                        <td><span class="param-name">id</span> <span class="param-required">required</span></td>
-                        <td>string</td>
-                        <td>Match ID from Cricbuzz</td>
-                    </tr>
-                </table>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl "{{ base_url }}/score/live?id=12345"</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "success": "true",
-  "livescore": {
-    "title": "India vs Australia, 3rd T20I",
-    "update": "India need 42 runs in 30 balls",
-    "current": "IND 144/3 (15)",
-    "runrate": "CRR: 9.60",
-    "batsman": "Virat Kohli",
-    "batsmanrun": "68",
-    "ballsfaced": "(42)",
-    "sr": "161.90",
-    "batsmantwo": "KL Rahul",
-    "batsmantworun": "22",
-    "batsmantwoballfaced": "(18)",
-    "batsmantwosr": "122.22",
-    "bowler": "Pat Cummins",
-    "bowlerover": "3",
-    "bowlerruns": "28",
-    "bowlerwickets": "1",
-    "bowlereconomy": "9.33",
-    "bowlertwo": "Mitchell Starc",
-    "bowlertwoover": "4",
-    "bowlertworuns": "35",
-    "bowlertwowickets": "2",
-    "bowlertwoeconomy": "8.75"
-  }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- GENERAL CRICKET -->
-        <h2>General Cricket</h2>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/api/live-matches</span>
-                <span class="endpoint-desc">All current live matches</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns a list of all currently live cricket matches across all formats (T20, ODI, Test) and tournaments.</p>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl {{ base_url }}/api/live-matches</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "status": "success",
-  "cached": true,
-  "cache_ttl_seconds": 10,
-  "count": 3,
-  "matches": [
-    {
-      "match_id": "12345",
-      "title": "India vs Australia, 3rd T20I",
-      "status": "In Progress",
-      "teams": [
-        {"name": "India", "score": "185/4 (20)"},
-        {"name": "Australia", "score": "92/3 (12.2)"}
-      ]
-    }
-  ]
-}</code></pre>
-            </div>
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/api/match-score?id={match_id}</span>
-                <span class="endpoint-desc">Detailed live score</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns detailed live score for a specific match including batters, bowlers, run rate, and match status.</p>
-                <table class="param-table">
-                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
-                    <tr>
-                        <td><span class="param-name">id</span> <span class="param-required">required</span></td>
-                        <td>string</td>
-                        <td>Match ID from Cricbuzz (get from <span class="inline-code">/api/live-matches</span>)</td>
-                    </tr>
-                </table>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl "{{ base_url }}/api/match-score?id=12345"</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "status": "success",
-  "data": {
-    "match_id": "12345",
-    "title": "India vs Australia, 3rd T20I",
-    "status": "India need 42 runs in 30 balls",
-    "status_type": "in_progress",
-    "live_score": "IND 144/3 (15)",
-    "run_rate": "9.60",
-    "batters": [
-      {"name": "Virat Kohli", "runs": "68", "balls": "42", "strike_rate": "161.90"}
-    ],
-    "bowlers": [
-      {"name": "Pat Cummins", "overs": "3", "runs_conceded": "28", "wickets": "1", "economy": "9.33"}
-    ]
-  }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- IPL 2025 -->
-        <h2>IPL 2025</h2>
+        <!-- IPL 2026 -->
+        <h2>IPL 2026</h2>
 
         <div class="endpoint">
             <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
@@ -415,9 +243,33 @@
                 <span class="endpoint-desc">IPL live scores</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns live scores for all ongoing IPL 2025 matches with the fastest update speed.</p>
+                <p>Returns live scores for all ongoing IPL 2026 matches. Auto-updated every 10 seconds.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/live-scores</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": false,
+  "cache_ttl_seconds": 10,
+  "data": {
+    "series": "Indian Premier League 2026",
+    "matches": [
+      {
+        "match_id": "149618",
+        "title": "Royal Challengers Bengaluru vs Sunrisers Hyderabad, 1st Match",
+        "series": "Indian Premier League 2026",
+        "status": "RCB won by 5 wickets",
+        "state": "Complete",
+        "teams": [
+          { "name": "Royal Challengers Bengaluru", "short_name": "RCB", "score": "185/5 (19.2)" },
+          { "name": "Sunrisers Hyderabad", "short_name": "SRH", "score": "181/8 (20)" }
+        ],
+        "venue": "M.Chinnaswamy Stadium, Bengaluru"
+      }
+    ],
+    "total": 1
+  }
+}</code></pre>
             </div>
         </div>
 
@@ -428,9 +280,32 @@
                 <span class="endpoint-desc">Full match schedule</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the complete IPL 2025 match schedule with dates, teams, and venues.</p>
+                <p>Returns the complete IPL 2026 match schedule with dates, teams, and venues.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/schedule</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": false,
+  "cache_ttl_seconds": 10,
+  "data": {
+    "series": "Indian Premier League 2026",
+    "matches": [
+      {
+        "match_id": "149618",
+        "date": "Sat, 28 Mar 2026",
+        "match_desc": "1st Match",
+        "status": "Match starts at Mar 28, 14:00 GMT",
+        "state": "Upcoming",
+        "team1": { "name": "Royal Challengers Bengaluru", "short_name": "RCB", "score": null },
+        "team2": { "name": "Sunrisers Hyderabad", "short_name": "SRH", "score": null },
+        "venue": "M.Chinnaswamy Stadium, Bengaluru",
+        "start_date": "2026-03-28 07:30:00 PM IST"
+      }
+    ],
+    "total": 74
+  }
+}</code></pre>
             </div>
         </div>
 
@@ -441,9 +316,32 @@
                 <span class="endpoint-desc">Current standings</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the current IPL 2025 points table with matches, wins, losses, and points for each team.</p>
+                <p>Returns the current IPL 2026 points table with matches, wins, losses, and points for each team.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/points-table</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": false,
+  "cache_ttl_seconds": 10,
+  "data": {
+    "series": "Indian Premier League 2026",
+    "teams": [
+      {
+        "team": "Mumbai Indians",
+        "short_name": "MI",
+        "played": 0,
+        "won": 0,
+        "lost": 0,
+        "tied": 0,
+        "no_result": 0,
+        "nrr": "0.000",
+        "points": 0
+      }
+    ],
+    "total": 10
+  }
+}</code></pre>
             </div>
         </div>
 
@@ -454,7 +352,7 @@
                 <span class="endpoint-desc">Team squad details</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the full squad for a specific IPL team including player roles, nationality, and captaincy info.</p>
+                <p>Returns the full squad for a specific IPL 2026 team.</p>
                 <table class="param-table">
                     <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
                     <tr>
@@ -478,6 +376,23 @@
                 </div>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/squad/mi</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": false,
+  "cache_ttl_seconds": 10,
+  "data": {
+    "team": "Mumbai Indians",
+    "team_code": "mi",
+    "players": [
+      { "name": "Rohit Sharma" },
+      { "name": "Suryakumar Yadav" },
+      { "name": "Hardik Pandya" },
+      { "name": "Jasprit Bumrah" }
+    ],
+    "total": 25
+  }
+}</code></pre>
             </div>
         </div>
 
@@ -488,9 +403,23 @@
                 <span class="endpoint-desc">Historical IPL winners</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the list of all IPL winners from 2008 onwards with runner-up, venue, and margin of victory.</p>
+                <p>Returns the list of all IPL winners from 2008 to 2025 with runner-up details.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/winners</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": false,
+  "cache_ttl_seconds": 10,
+  "data": {
+    "winners": [
+      { "year": 2008, "winner": "Rajasthan Royals", "runner_up": "Chennai Super Kings" },
+      { "year": 2009, "winner": "Deccan Chargers", "runner_up": "Royal Challengers Bangalore" },
+      { "year": 2025, "winner": "Royal Challengers Bengaluru", "runner_up": "Punjab Kings" }
+    ],
+    "total": 18
+  }
+}</code></pre>
             </div>
         </div>
 
@@ -501,9 +430,26 @@
                 <span class="endpoint-desc">All team codes</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the list of all IPL team codes and their full names. Use these codes with the squad endpoint.</p>
+                <p>Returns all IPL team codes and their full names. Use these codes with the squad endpoint.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/teams</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "count": 10,
+  "teams": {
+    "csk": "Chennai Super Kings",
+    "dc": "Delhi Capitals",
+    "gt": "Gujarat Titans",
+    "rcb": "Royal Challengers Bengaluru",
+    "pk": "Punjab Kings",
+    "kkr": "Kolkata Knight Riders",
+    "srh": "Sunrisers Hyderabad",
+    "rr": "Rajasthan Royals",
+    "lsg": "Lucknow Super Giants",
+    "mi": "Mumbai Indians"
+  }
+}</code></pre>
             </div>
         </div>
 
@@ -523,8 +469,8 @@
         </div>
 
         <footer>
-            <p>Data sourced from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a>, <a href="https://github.com/sanwebinfo/cricket-api" target="_blank">sanwebinfo/cricket-api</a>, and <a href="https://github.com/cu-sanjay/IPL-2025-API-Free" target="_blank">IPL 2025 API</a>.</p>
-            <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited &bull; Auto-updating.</p>
+            <p>Data scraped live from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a> with automatic retry and 10-second TTL caching.</p>
+            <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited.</p>
         </footer>
     </div>
 </body>
