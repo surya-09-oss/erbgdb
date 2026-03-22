@@ -2,13 +2,19 @@
 
 Scrapes live cricket data from Cricbuzz.com and returns it in the same
 JSON structure used by https://github.com/sanwebinfo/cricket-api.
+
+Cricbuzz migrated to a Next.js / React Server Components architecture.
+Match data is now embedded in the page as a ``miniscore`` JSON object
+inside RSC script payloads, which is far more reliable than scraping
+HTML class names.
 """
 
+import json
 import random
+import re
+
 import httpx
 from bs4 import BeautifulSoup
-from datetime import datetime
-import pytz
 
 USER_AGENTS = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -31,77 +37,88 @@ def _get_headers() -> dict[str, str]:
     }
 
 
-def _safe_find_text(
-    soup: BeautifulSoup, tag: str, class_name: str, index: int = 0, fallback: str = UPDATING,
-) -> str:
-    elements = soup.find_all(tag, attrs={"class": class_name})
-    if elements and len(elements) > index:
-        return elements[index].text.strip()
-    return fallback
+def _extract_json_object(text: str, start: int) -> dict | None:
+    """Extract a complete JSON object starting at *start* (must point to '{')."""
+    depth = 0
+    for i in range(start, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(text[start : i + 1])
+                except json.JSONDecodeError:
+                    return None
+    return None
 
 
-def _parse_match_date_formatted(soup: BeautifulSoup) -> str:
-    element = soup.find("span", itemprop="startDate")
-    if element:
-        match_time = element.get("content", "")
+def _extract_miniscore(page_text: str) -> dict | None:
+    """Extract the ``miniscore`` JSON object from Cricbuzz RSC script payloads."""
+    rsc_payloads = re.findall(
+        r'self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)', page_text
+    )
+    for payload in rsc_payloads:
+        if "miniscore" not in payload:
+            continue
         try:
-            aware_time = datetime.fromisoformat(match_time)
-            ist = pytz.timezone("Asia/Kolkata")
-            local_time = aware_time.astimezone(ist)
-            return local_time.strftime(
-                "Date: %Y-%m-%d - Time: %I:%M:%S %p (Indian Local Time)"
-            )
-        except (ValueError, IndexError):
-            return UPDATING
-    return UPDATING
+            unescaped = payload.encode().decode("unicode_escape")
+        except (UnicodeDecodeError, ValueError):
+            continue
+        ms_match = re.search(r'"miniscore"\s*:\s*\{', unescaped)
+        if not ms_match:
+            continue
+        obj = _extract_json_object(unescaped, ms_match.end() - 1)
+        if obj:
+            return obj
+    return None
 
 
-def _resolve_status(soup: BeautifulSoup) -> str:
-    update = _safe_find_text(
-        soup, "div", "cb-col cb-col-100 cb-min-stts cb-text-complete"
+def _extract_title(soup: BeautifulSoup) -> str:
+    """Extract match title from the page ``<h1>`` element."""
+    h1 = soup.find("h1")
+    if h1:
+        title = h1.text.strip()
+        for suffix in [" - Commentary", ", Commentary"]:
+            if title.endswith(suffix):
+                title = title[: -len(suffix)]
+        return title
+    return NOT_FOUND
+
+
+def _format_live_score(miniscore: dict) -> str:
+    """Build a live-score string like ``IND 144/3 (15)`` from miniscore data."""
+    bat_team = miniscore.get("batTeam", {})
+    # teamName is in batTeamScoreObj, not batTeam
+    team_name = (
+        miniscore.get("batTeamScoreObj", {}).get("teamName")
+        or bat_team.get("teamName")
+        or bat_team.get("teamId", "")
     )
-    if update != UPDATING:
-        return update
+    score = bat_team.get("teamScore", "")
+    wkts = bat_team.get("teamWkts")
+    overs = miniscore.get("overs", "")
 
-    process = _safe_find_text(soup, "div", "cb-text-inprogress")
-    if process != UPDATING:
-        return process
+    if score == "" and wkts is None:
+        return NOT_FOUND
 
-    noresult = _safe_find_text(
-        soup, "div", "cb-col cb-col-100 cb-font-18 cb-toss-sts cb-text-abandon"
-    )
-    if noresult != UPDATING:
-        return noresult
+    score_str = str(score)
+    if wkts is not None:
+        score_str += f"/{wkts}"
 
-    stumps = _safe_find_text(soup, "div", "cb-text-stumps")
-    if stumps != UPDATING:
-        return stumps
+    return f"{team_name} {score_str} ({overs})"
 
-    lunch = _safe_find_text(soup, "div", "cb-text-lunch")
-    if lunch != UPDATING:
-        return lunch
 
-    inningsbreak = _safe_find_text(soup, "div", "cb-text-inningsbreak")
-    if inningsbreak != UPDATING:
-        return inningsbreak
+def _safe(value: object, fallback: str = UPDATING) -> str:
+    """Return *value* as a string, falling back if empty/zero/None."""
+    if value is None or value == "":
+        return fallback
+    return str(value)
 
-    tea = _safe_find_text(soup, "div", "cb-text-tea")
-    if tea != UPDATING:
-        return tea
 
-    rain_break = _safe_find_text(soup, "div", "cb-text-rain")
-    if rain_break != UPDATING:
-        return rain_break
-
-    wet_outfield = _safe_find_text(soup, "div", "cb-text-wetoutfield")
-    if wet_outfield != UPDATING:
-        return wet_outfield
-
-    match_date = _parse_match_date_formatted(soup)
-    if match_date != UPDATING:
-        return match_date
-
-    return "Match Stats will Update Soon..."
+def _is_player_empty(player: dict) -> bool:
+    """Return True if the player object has no real data (id == 0, empty name)."""
+    return player.get("id", 0) == 0 and not player.get("name")
 
 
 async def fetch_score_flat(match_id: str) -> dict:
@@ -119,75 +136,110 @@ async def fetch_score_flat(match_id: str) -> dict:
         except httpx.HTTPError:
             return _not_found_flat()
 
+    page_text = r.text
     soup = BeautifulSoup(r.content, "html.parser")
 
-    try:
-        title_el = soup.find("h1", attrs={"class": "cb-nav-hdr cb-font-18 line-ht24"})
-        title = title_el.text.strip().replace(", Commentary", "") if title_el else NOT_FOUND
+    # --- title from <h1> ---
+    title = _extract_title(soup)
 
-        live_score_el = soup.find("span", attrs={"class": "cb-font-20 text-bold"})
-        live_score = live_score_el.text.strip() if live_score_el else NOT_FOUND
+    # --- miniscore from RSC payload ---
+    ms = _extract_miniscore(page_text)
 
-        run_rate_els = soup.find_all("span", attrs={"class": "cb-font-12 cb-text-gray"})
-        run_rate = run_rate_els[0].text.strip().replace("CRR:\xa0", "") if run_rate_els else NOT_FOUND
+    if ms is None:
+        # Fallback: try to get status from HTML
+        status_div = soup.find("div", attrs={"class": "text-cbTextLink"})
+        status = status_div.text.strip() if status_div else "Match Stats will Update Soon..."
+        return {
+            "title": title,
+            "update": status,
+            "livescore": NOT_FOUND,
+            "runrate": "CRR: " + NOT_FOUND,
+            "batterone": UPDATING,
+            "batsmanonerun": UPDATING,
+            "batsmanoneball": "(" + UPDATING + ")",
+            "batsmanonesr": UPDATING,
+            "battertwo": UPDATING,
+            "batsmantworun": UPDATING,
+            "batsmantwoball": "(" + UPDATING + ")",
+            "batsmantwosr": UPDATING,
+            "bowlerone": UPDATING,
+            "bowleroneover": UPDATING,
+            "bowleronerun": UPDATING,
+            "bowleronewickers": UPDATING,
+            "bowleroneeconomy": UPDATING,
+            "bowlertwo": UPDATING,
+            "bowlertwoover": UPDATING,
+            "bowlertworun": UPDATING,
+            "bowlertwowickers": UPDATING,
+            "bowlertwoeconomy": UPDATING,
+        }
 
-        bat_names = soup.find_all("div", attrs={"class": "cb-col cb-col-50"})
-        bat_runs = soup.find_all("div", attrs={"class": "cb-col cb-col-10 ab text-right"})
-        bat_sr = soup.find_all("div", attrs={"class": "cb-col cb-col-14 ab text-right"})
+    # --- status ---
+    msd = ms.get("matchScoreDetails", {})
+    status = msd.get("customStatus") or ms.get("status") or "Match Stats will Update Soon..."
 
-        batter_one = bat_names[1].text.strip() if len(bat_names) > 1 else UPDATING
-        batter_two = bat_names[2].text.strip() if len(bat_names) > 2 else UPDATING
-        batter_one_run = bat_runs[0].text.strip() if len(bat_runs) > 0 else UPDATING
-        batter_one_ball = bat_runs[1].text.strip() if len(bat_runs) > 1 else UPDATING
-        batter_two_run = bat_runs[2].text.strip() if len(bat_runs) > 2 else UPDATING
-        batter_two_ball = bat_runs[3].text.strip() if len(bat_runs) > 3 else UPDATING
-        batter_one_sr = bat_sr[0].text.strip() if len(bat_sr) > 0 else UPDATING
-        batter_two_sr = bat_sr[1].text.strip() if len(bat_sr) > 1 else UPDATING
+    # --- live score ---
+    live_score = _format_live_score(ms)
 
-        bowl_names = soup.find_all("div", attrs={"class": "cb-col cb-col-50"})
-        bowl_overs = soup.find_all("div", attrs={"class": "cb-col cb-col-10 text-right"})
-        bowl_eco = soup.find_all("div", attrs={"class": "cb-col cb-col-14 text-right"})
-        bowl_wickets = soup.find_all("div", attrs={"class": "cb-col cb-col-8 text-right"})
+    # --- run rate ---
+    crr = ms.get("currentRunRate")
+    run_rate = str(crr) if crr else NOT_FOUND
 
-        bowler_one = bowl_names[4].text.strip() if len(bowl_names) > 4 else UPDATING
-        bowler_two = bowl_names[5].text.strip() if len(bowl_names) > 5 else UPDATING
-        bowler_one_over = bowl_overs[4].text.strip() if len(bowl_overs) > 4 else UPDATING
-        bowler_one_run = bowl_overs[5].text.strip() if len(bowl_overs) > 5 else UPDATING
-        bowler_two_over = bowl_overs[6].text.strip() if len(bowl_overs) > 6 else UPDATING
-        bowler_two_run = bowl_overs[7].text.strip() if len(bowl_overs) > 7 else UPDATING
-        bowler_one_eco = bowl_eco[2].text.strip() if len(bowl_eco) > 2 else UPDATING
-        bowler_two_eco = bowl_eco[3].text.strip() if len(bowl_eco) > 3 else UPDATING
-        bowler_one_wicket = bowl_wickets[5].text.strip() if len(bowl_wickets) > 5 else UPDATING
-        bowler_two_wicket = bowl_wickets[7].text.strip() if len(bowl_wickets) > 7 else UPDATING
+    # --- batters ---
+    striker = ms.get("batsmanStriker", {})
+    non_striker = ms.get("batsmanNonStriker", {})
 
-    except (IndexError, AttributeError):
-        title_el = soup.find("h1", attrs={"class": "cb-nav-hdr cb-font-18 line-ht24"})
-        title = title_el.text.strip().replace(", Commentary", "") if title_el else NOT_FOUND
-
-        live_score_el = soup.find("span", attrs={"class": "cb-font-20 text-bold"})
-        live_score = live_score_el.text.strip() if live_score_el else NOT_FOUND
-
-        run_rate = UPDATING
+    if _is_player_empty(striker):
         batter_one = UPDATING
-        batter_two = UPDATING
         batter_one_run = UPDATING
         batter_one_ball = UPDATING
+        batter_one_sr = UPDATING
+    else:
+        batter_one = _safe(striker.get("name"))
+        batter_one_run = _safe(striker.get("runs"))
+        batter_one_ball = _safe(striker.get("balls"))
+        batter_one_sr = _safe(striker.get("strikeRate"))
+
+    if _is_player_empty(non_striker):
+        batter_two = UPDATING
         batter_two_run = UPDATING
         batter_two_ball = UPDATING
-        batter_one_sr = UPDATING
         batter_two_sr = UPDATING
+    else:
+        batter_two = _safe(non_striker.get("name"))
+        batter_two_run = _safe(non_striker.get("runs"))
+        batter_two_ball = _safe(non_striker.get("balls"))
+        batter_two_sr = _safe(non_striker.get("strikeRate"))
+
+    # --- bowlers ---
+    bowler_s = ms.get("bowlerStriker", {})
+    bowler_ns = ms.get("bowlerNonStriker", {})
+
+    if _is_player_empty(bowler_s):
         bowler_one = UPDATING
-        bowler_two = UPDATING
         bowler_one_over = UPDATING
         bowler_one_run = UPDATING
+        bowler_one_wicket = UPDATING
+        bowler_one_eco = UPDATING
+    else:
+        bowler_one = _safe(bowler_s.get("name"))
+        bowler_one_over = _safe(bowler_s.get("overs"))
+        bowler_one_run = _safe(bowler_s.get("runs"))
+        bowler_one_wicket = _safe(bowler_s.get("wickets"))
+        bowler_one_eco = _safe(bowler_s.get("economy"))
+
+    if _is_player_empty(bowler_ns):
+        bowler_two = UPDATING
         bowler_two_over = UPDATING
         bowler_two_run = UPDATING
-        bowler_one_eco = UPDATING
-        bowler_two_eco = UPDATING
-        bowler_one_wicket = UPDATING
         bowler_two_wicket = UPDATING
-
-    status = _resolve_status(soup)
+        bowler_two_eco = UPDATING
+    else:
+        bowler_two = _safe(bowler_ns.get("name"))
+        bowler_two_over = _safe(bowler_ns.get("overs"))
+        bowler_two_run = _safe(bowler_ns.get("runs"))
+        bowler_two_wicket = _safe(bowler_ns.get("wickets"))
+        bowler_two_eco = _safe(bowler_ns.get("economy"))
 
     return {
         "title": title,
