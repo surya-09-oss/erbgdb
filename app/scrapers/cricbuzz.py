@@ -36,11 +36,9 @@ def _parse_match_date(soup: BeautifulSoup) -> str | None:
     if element:
         match_time = element.get("content", "")
         try:
-            new_dt = match_time.split("+")[0]
-            utc_time = datetime.strptime(new_dt, "%Y-%m-%dT%H:%M:%S")
-            utc_time = utc_time.replace(tzinfo=pytz.UTC)
+            aware_time = datetime.fromisoformat(match_time)
             ist = pytz.timezone("Asia/Kolkata")
-            local_time = utc_time.astimezone(ist)
+            local_time = aware_time.astimezone(ist)
             return local_time.strftime("%Y-%m-%d %I:%M:%S %p IST")
         except (ValueError, IndexError):
             return None
