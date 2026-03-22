@@ -256,10 +256,127 @@
     {
       "match_id": "12345",
       "title": "India vs Australia, 3rd T20I",
-      "status": "In Progress",
+      "series": "Australia tour of India",
+      "match_type": "International",
+      "match_format": "T20",
+      "status": "India won by 5 wkts",
+      "state": "Complete",
+      "start_date": "2025-03-22 07:30:00 PM IST",
+      "venue": "Wankhede Stadium, Mumbai",
       "teams": [
-        {"name": "India", "score": "185/4 (20)"},
-        {"name": "Australia", "score": "92/3 (12.2)"}
+        {"name": "India", "short_name": "IND", "score": "185/4 (20)"},
+        {"name": "Australia", "short_name": "AUS", "score": "92/3 (12.2)"}
+      ]
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/upcoming-matches</span>
+                <span class="endpoint-desc">Upcoming scheduled matches</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns a list of upcoming cricket matches that haven't started yet, across all formats and tournaments.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/upcoming-matches</code></pre>
+                <div class="section-label">Example Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": true,
+  "cache_ttl_seconds": 10,
+  "count": 5,
+  "matches": [
+    {
+      "match_id": "67890",
+      "title": "India vs England, 1st ODI",
+      "series": "England tour of India",
+      "match_type": "International",
+      "match_format": "ODI",
+      "status": "",
+      "state": "Preview",
+      "start_date": "2025-03-25 02:00:00 PM IST",
+      "venue": "Eden Gardens, Kolkata",
+      "teams": [
+        {"name": "India", "short_name": "IND", "score": null},
+        {"name": "England", "short_name": "ENG", "score": null}
+      ]
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/completed-matches</span>
+                <span class="endpoint-desc">Recently completed matches</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns a list of recently completed cricket matches with final scores and results.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/completed-matches</code></pre>
+                <div class="section-label">Example Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": true,
+  "cache_ttl_seconds": 10,
+  "count": 8,
+  "matches": [
+    {
+      "match_id": "12345",
+      "title": "India vs Australia, 3rd T20I",
+      "series": "Australia tour of India",
+      "match_type": "International",
+      "match_format": "T20",
+      "status": "India won by 5 wkts",
+      "state": "Complete",
+      "start_date": "2025-03-22 07:30:00 PM IST",
+      "venue": "Wankhede Stadium, Mumbai",
+      "teams": [
+        {"name": "India", "short_name": "IND", "score": "186/5 (19.2)"},
+        {"name": "Australia", "short_name": "AUS", "score": "185/7 (20)"}
+      ]
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/running-matches</span>
+                <span class="endpoint-desc">Currently in-progress matches</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns a list of cricket matches that are currently in progress (live play, toss, innings break, etc.).</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/running-matches</code></pre>
+                <div class="section-label">Example Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": true,
+  "cache_ttl_seconds": 10,
+  "count": 2,
+  "matches": [
+    {
+      "match_id": "54321",
+      "title": "India vs Australia, 3rd T20I",
+      "series": "Australia tour of India",
+      "match_type": "International",
+      "match_format": "T20",
+      "status": "India need 42 runs in 30 balls",
+      "state": "In Progress",
+      "start_date": "2025-03-22 07:30:00 PM IST",
+      "venue": "Wankhede Stadium, Mumbai",
+      "teams": [
+        {"name": "India", "short_name": "IND", "score": "144/3 (15)"},
+        {"name": "Australia", "short_name": "AUS", "score": "185/7 (20)"}
       ]
     }
   ]

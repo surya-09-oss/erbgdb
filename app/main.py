@@ -8,7 +8,13 @@ from fastapi.responses import HTMLResponse
 from jinja2 import Environment, FileSystemLoader
 
 from app.scrapers.cache import cache
-from app.scrapers.cricbuzz import fetch_live_matches, fetch_match_score
+from app.scrapers.cricbuzz import (
+    fetch_completed_matches,
+    fetch_live_matches,
+    fetch_match_score,
+    fetch_running_matches,
+    fetch_upcoming_matches,
+)
 from app.scrapers.ipl_api import (
     TEAM_CODES,
     fetch_ipl_live_scores,
@@ -81,6 +87,78 @@ async def live_matches() -> dict:
         }
 
     data = await fetch_live_matches()
+    await cache.set(cache_key, data)
+    return {
+        "status": "success",
+        "cached": False,
+        "cache_ttl_seconds": 10,
+        "count": len(data),
+        "matches": data,
+    }
+
+
+@app.get("/api/upcoming-matches")
+async def upcoming_matches() -> dict:
+    cache_key = "upcoming_matches"
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return {
+            "status": "success",
+            "cached": True,
+            "cache_ttl_seconds": 10,
+            "count": len(cached),
+            "matches": cached,
+        }
+
+    data = await fetch_upcoming_matches()
+    await cache.set(cache_key, data)
+    return {
+        "status": "success",
+        "cached": False,
+        "cache_ttl_seconds": 10,
+        "count": len(data),
+        "matches": data,
+    }
+
+
+@app.get("/api/completed-matches")
+async def completed_matches() -> dict:
+    cache_key = "completed_matches"
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return {
+            "status": "success",
+            "cached": True,
+            "cache_ttl_seconds": 10,
+            "count": len(cached),
+            "matches": cached,
+        }
+
+    data = await fetch_completed_matches()
+    await cache.set(cache_key, data)
+    return {
+        "status": "success",
+        "cached": False,
+        "cache_ttl_seconds": 10,
+        "count": len(data),
+        "matches": data,
+    }
+
+
+@app.get("/api/running-matches")
+async def running_matches() -> dict:
+    cache_key = "running_matches"
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return {
+            "status": "success",
+            "cached": True,
+            "cache_ttl_seconds": 10,
+            "count": len(cached),
+            "matches": cached,
+        }
+
+    data = await fetch_running_matches()
     await cache.set(cache_key, data)
     return {
         "status": "success",

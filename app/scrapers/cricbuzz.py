@@ -1,6 +1,9 @@
 """Cricbuzz scraper - scrapes live cricket data from Cricbuzz.com."""
 
+import json
 import random
+import re
+
 import httpx
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -13,6 +16,11 @@ USER_AGENTS = [
 ]
 
 BASE_URL = "https://www.cricbuzz.com"
+
+# Match states from Cricbuzz
+LIVE_STATES = {"In Progress", "Toss", "Stumps", "Lunch", "Tea", "Innings Break", "Drink"}
+COMPLETED_STATES = {"Complete", "Abandoned", "No Result"}
+UPCOMING_STATES = {"Preview", "Upcoming"}
 
 
 def _get_headers() -> dict[str, str]:
@@ -47,62 +55,204 @@ def _parse_match_date(soup: BeautifulSoup) -> str | None:
     return None
 
 
-async def fetch_live_matches() -> list[dict]:
-    """Fetch all current live cricket matches from Cricbuzz."""
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        try:
-            r = await client.get(f"{BASE_URL}/cricket-match/live-scores", headers=_get_headers())
-            r.raise_for_status()
-        except httpx.HTTPError:
-            return []
+def _timestamp_to_ist(ts_millis: str) -> str | None:
+    """Convert a millisecond timestamp string to IST formatted date."""
+    try:
+        utc_time = datetime.fromtimestamp(int(ts_millis) / 1000, tz=pytz.UTC)
+        ist = pytz.timezone("Asia/Kolkata")
+        local_time = utc_time.astimezone(ist)
+        return local_time.strftime("%Y-%m-%d %I:%M:%S %p IST")
+    except (ValueError, TypeError, OSError):
+        return None
 
-    soup = BeautifulSoup(r.content, "lxml")
-    matches = []
 
-    match_cards = soup.find_all("div", attrs={"class": "cb-mtch-lst cb-col cb-col-100 cb-tms-itm"})
-    for card in match_cards:
-        try:
-            title_el = card.find("h3", attrs={"class": "cb-lv-scr-mtch-hdr"})
-            title = title_el.text.strip() if title_el else None
+def _extract_rsc_matches(html_text: str) -> list[dict]:
+    """Extract match data from Cricbuzz Next.js RSC payload embedded in HTML."""
+    soup = BeautifulSoup(html_text, "lxml")
+    scripts = soup.find_all("script")
 
-            link_el = card.find("a", attrs={"class": "cb-lv-scrs-well"}) or card.find("a")
-            match_id = None
-            if link_el and link_el.get("href"):
-                href = link_el["href"]
-                parts = href.split("/")
-                for i, part in enumerate(parts):
-                    if part == "live-cricket-scores" and i + 1 < len(parts):
-                        match_id = parts[i + 1]
+    for script in scripts:
+        if script.string and "typeMatches" in script.string:
+            rsc_match = re.search(
+                r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', script.string, re.DOTALL
+            )
+            if not rsc_match:
+                continue
+
+            raw = rsc_match.group(1)
+            unescaped = raw.replace('\\"', '"').replace("\\\\", "\\").replace("\\n", "\n")
+
+            idx = unescaped.find('"typeMatches"')
+            if idx < 0:
+                continue
+
+            start = unescaped.rfind("{", max(0, idx - 500), idx)
+            if start < 0:
+                continue
+
+            bracket_count = 0
+            end_pos = start
+            for j in range(start, len(unescaped)):
+                char = unescaped[j]
+                if char == "{":
+                    bracket_count += 1
+                elif char == "}":
+                    bracket_count -= 1
+                    if bracket_count == 0:
+                        end_pos = j + 1
                         break
 
-            status_el = card.find("div", attrs={"class": "cb-text-live"}) or \
-                        card.find("div", attrs={"class": "cb-text-complete"}) or \
-                        card.find("div", attrs={"class": "cb-text-inprogress"}) or \
-                        card.find("div", attrs={"class": "cb-text-stumps"})
-            status = status_el.text.strip() if status_el else "Unknown"
+            try:
+                data = json.loads(unescaped[start:end_pos])
+            except json.JSONDecodeError:
+                continue
 
-            score_items = card.find_all("div", attrs={"class": "cb-col-100 cb-scr-wll-chvrn"})
-            teams = []
-            for item in score_items:
-                team_name_el = item.find("div", attrs={"class": "cb-hmscg-tm-nm"})
-                score_el = item.find("div", attrs={"class": "cb-hmscg-tm-nm cb-font-bold"}) or \
-                           item.find("span", attrs={"class": "cb-font-20"})
-                team_name = team_name_el.text.strip() if team_name_el else None
-                score = score_el.text.strip() if score_el else None
-                if team_name:
-                    teams.append({"name": team_name, "score": score})
+            all_matches: list[dict] = []
+            for type_match in data.get("typeMatches", []):
+                match_type = type_match.get("matchType", "Unknown")
+                for series_match in type_match.get("seriesMatches", []):
+                    wrapper = series_match.get("seriesAdWrapper", {})
+                    if not wrapper:
+                        continue
+                    series_name = wrapper.get("seriesName", "")
+                    for m in wrapper.get("matches", []):
+                        info = m.get("matchInfo", {})
+                        score_data = m.get("matchScore", {})
+                        all_matches.append(
+                            _format_match(info, score_data, match_type, series_name)
+                        )
+            return all_matches
 
-            if title or match_id:
-                matches.append({
-                    "match_id": match_id,
-                    "title": title,
-                    "status": status,
-                    "teams": teams,
-                })
-        except (AttributeError, IndexError):
-            continue
+    return []
 
-    return matches
+
+def _format_score(score_obj: dict) -> str | None:
+    """Format an innings score object into a readable string like '185/4 (20)'."""
+    if not score_obj:
+        return None
+    inngs = score_obj.get("inngs1", {})
+    if not inngs:
+        return None
+    runs = inngs.get("runs", "")
+    wickets = inngs.get("wickets", "")
+    overs = inngs.get("overs", "")
+    parts = []
+    if runs != "":
+        parts.append(str(runs))
+    if wickets != "":
+        if parts:
+            parts[-1] = f"{parts[-1]}/{wickets}"
+        else:
+            parts.append(f"/{wickets}")
+    if overs != "":
+        parts.append(f"({overs})")
+    inngs2 = score_obj.get("inngs2", {})
+    if inngs2:
+        r2 = inngs2.get("runs", "")
+        w2 = inngs2.get("wickets", "")
+        o2 = inngs2.get("overs", "")
+        second = ""
+        if r2 != "":
+            second = str(r2)
+        if w2 != "":
+            second = f"{second}/{w2}" if second else f"/{w2}"
+        if o2 != "":
+            second += f" ({o2})"
+        if second:
+            parts.append(f"& {second}")
+    return " ".join(parts) if parts else None
+
+
+def _format_match(
+    info: dict, score_data: dict, match_type: str, series_name: str
+) -> dict:
+    """Format raw match info and score data into a clean API response dict."""
+    team1 = info.get("team1", {})
+    team2 = info.get("team2", {})
+    venue = info.get("venueInfo", {})
+
+    t1_score = _format_score(score_data.get("team1Score", {}))
+    t2_score = _format_score(score_data.get("team2Score", {}))
+
+    teams = []
+    if team1:
+        teams.append({
+            "name": team1.get("teamName", ""),
+            "short_name": team1.get("teamSName", ""),
+            "score": t1_score,
+        })
+    if team2:
+        teams.append({
+            "name": team2.get("teamName", ""),
+            "short_name": team2.get("teamSName", ""),
+            "score": t2_score,
+        })
+
+    start_date = _timestamp_to_ist(info.get("startDate", ""))
+
+    return {
+        "match_id": str(info.get("matchId", "")),
+        "title": f"{team1.get('teamName', '')} vs {team2.get('teamName', '')}, {info.get('matchDesc', '')}",
+        "series": series_name,
+        "match_type": match_type,
+        "match_format": info.get("matchFormat", ""),
+        "status": info.get("status", ""),
+        "state": info.get("state", ""),
+        "state_title": info.get("stateTitle", ""),
+        "start_date": start_date,
+        "venue": f"{venue.get('ground', '')}, {venue.get('city', '')}" if venue else None,
+        "teams": teams,
+    }
+
+
+async def _fetch_cricbuzz_page(path: str) -> str:
+    """Fetch a Cricbuzz page and return the HTML text."""
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        r = await client.get(f"{BASE_URL}{path}", headers=_get_headers())
+        r.raise_for_status()
+        return r.text
+
+
+async def fetch_live_matches() -> list[dict]:
+    """Fetch all current live cricket matches from Cricbuzz."""
+    try:
+        html = await _fetch_cricbuzz_page("/cricket-match/live-scores")
+    except httpx.HTTPError:
+        return []
+    return _extract_rsc_matches(html)
+
+
+async def fetch_upcoming_matches() -> list[dict]:
+    """Fetch upcoming cricket matches from Cricbuzz."""
+    try:
+        html = await _fetch_cricbuzz_page("/cricket-match/live-scores/upcoming-matches")
+    except httpx.HTTPError:
+        return []
+
+    all_matches = _extract_rsc_matches(html)
+    return [m for m in all_matches if m.get("state") in UPCOMING_STATES]
+
+
+async def fetch_completed_matches() -> list[dict]:
+    """Fetch recently completed cricket matches from Cricbuzz."""
+    try:
+        html = await _fetch_cricbuzz_page("/cricket-match/live-scores/recent-matches")
+    except httpx.HTTPError:
+        return []
+
+    all_matches = _extract_rsc_matches(html)
+    return [m for m in all_matches if m.get("state") in COMPLETED_STATES]
+
+
+async def fetch_running_matches() -> list[dict]:
+    """Fetch currently running (in-progress) cricket matches from Cricbuzz."""
+    try:
+        html = await _fetch_cricbuzz_page("/cricket-match/live-scores")
+    except httpx.HTTPError:
+        return []
+
+    all_matches = _extract_rsc_matches(html)
+    return [m for m in all_matches if m.get("state") in LIVE_STATES]
 
 
 async def fetch_match_score(match_id: str) -> dict:
