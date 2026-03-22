@@ -1,11 +1,10 @@
-# Cricket API
+# IPL 2026 API
 
-Free, unlimited, self-hosted JSON API for live cricket scores, IPL 2025 data, and more.
+Free, unlimited, self-hosted JSON API for IPL 2026 data.
 
 ## Features
 
-- **Live Cricket Scores** — All formats (T20, ODI, Test) scraped from Cricbuzz
-- **IPL 2025 Data** — Live scores, schedule, points table, team squads, historical winners
+- **IPL 2026 Data** — Live scores, schedule, points table, team squads, historical winners
 - **10-Second Auto-Refresh Cache** — Always fresh data with zero delay
 - **No API Key Required** — Completely free and unlimited
 - **Self-Hosted** — Deploy anywhere (Docker, Render, Vercel, your own server)
@@ -16,14 +15,9 @@ Free, unlimited, self-hosted JSON API for live cricket scores, IPL 2025 data, an
 | Endpoint | Description |
 |---|---|
 | `GET /` | Documentation page (HTML) |
-| `GET /api/live-matches` | All current live cricket matches |
-| `GET /api/upcoming-matches` | Upcoming scheduled matches |
-| `GET /api/completed-matches` | Recently completed matches |
-| `GET /api/running-matches` | Currently in-progress matches |
-| `GET /api/match-score?id={id}` | Detailed live score for a specific match |
-| `GET /api/ipl/live-scores` | IPL 2025 live scores |
-| `GET /api/ipl/schedule` | IPL 2025 match schedule |
-| `GET /api/ipl/points-table` | IPL 2025 points table |
+| `GET /api/ipl/live-scores` | IPL 2026 live scores |
+| `GET /api/ipl/schedule` | IPL 2026 match schedule |
+| `GET /api/ipl/points-table` | IPL 2026 points table |
 | `GET /api/ipl/squad/{team_code}` | Team squad (mi, csk, rcb, dc, kkr, pk, rr, srh, gt, lsg) |
 | `GET /api/ipl/winners` | Historical IPL winners |
 | `GET /api/ipl/teams` | All team codes |
@@ -47,18 +41,17 @@ Visit `http://localhost:8000` for the documentation page.
 ### Docker
 
 ```bash
-docker build -t cricket-api .
-docker run -p 8000:8000 cricket-api
+docker build -t ipl-api .
+docker run -p 8000:8000 ipl-api
 ```
 
 ## Data Sources
 
-- [Cricbuzz](https://www.cricbuzz.com/) — Live cricket scores (scraped)
-- [IPL 2025 API](https://github.com/cu-sanjay/IPL-2025-API-Free) — IPL-specific data
+- [IPL 2026 API](https://github.com/cu-sanjay/IPL-2025-API-Free) — IPL-specific data
 
 ## Disclaimer
 
-This is an unofficial API for educational purposes. Not affiliated with Cricbuzz or any cricket board.
+This is an unofficial API for educational purposes. Not affiliated with any cricket board.
 
 ## License
 

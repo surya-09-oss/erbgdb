@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket API - Documentation</title>
+    <title>IPL 2026 API - Documentation</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -218,8 +218,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>Cricket API</h1>
-            <p>Free, unlimited, self-hosted JSON API for live cricket scores, IPL data, and more.</p>
+            <h1>IPL 2026 API</h1>
+            <p>Free, unlimited, self-hosted JSON API for IPL 2026 data.</p>
             <span class="badge">v1.0</span>
             <div class="stats">
                 <span class="stat"><strong>Auto-refresh:</strong> every 10s</span>
@@ -233,198 +233,8 @@
             <strong>Auto-updating cache:</strong> All data is cached and automatically refreshed every <strong>10 seconds</strong> from source APIs. You always get fresh data with zero delay.
         </div>
 
-        <!-- GENERAL CRICKET -->
-        <h2>General Cricket</h2>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/api/live-matches</span>
-                <span class="endpoint-desc">All current live matches</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns a list of all currently live cricket matches across all formats (T20, ODI, Test) and tournaments.</p>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl {{ base_url }}/api/live-matches</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "status": "success",
-  "cached": true,
-  "cache_ttl_seconds": 10,
-  "count": 3,
-  "matches": [
-    {
-      "match_id": "12345",
-      "title": "India vs Australia, 3rd T20I",
-      "series": "Australia tour of India",
-      "match_type": "International",
-      "match_format": "T20",
-      "status": "India won by 5 wkts",
-      "state": "Complete",
-      "start_date": "2025-03-22 07:30:00 PM IST",
-      "venue": "Wankhede Stadium, Mumbai",
-      "teams": [
-        {"name": "India", "short_name": "IND", "score": "185/4 (20)"},
-        {"name": "Australia", "short_name": "AUS", "score": "92/3 (12.2)"}
-      ]
-    }
-  ]
-}</code></pre>
-            </div>
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/api/upcoming-matches</span>
-                <span class="endpoint-desc">Upcoming scheduled matches</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns a list of upcoming cricket matches that haven't started yet, across all formats and tournaments.</p>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl {{ base_url }}/api/upcoming-matches</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "status": "success",
-  "cached": true,
-  "cache_ttl_seconds": 10,
-  "count": 5,
-  "matches": [
-    {
-      "match_id": "67890",
-      "title": "India vs England, 1st ODI",
-      "series": "England tour of India",
-      "match_type": "International",
-      "match_format": "ODI",
-      "status": "",
-      "state": "Preview",
-      "start_date": "2025-03-25 02:00:00 PM IST",
-      "venue": "Eden Gardens, Kolkata",
-      "teams": [
-        {"name": "India", "short_name": "IND", "score": null},
-        {"name": "England", "short_name": "ENG", "score": null}
-      ]
-    }
-  ]
-}</code></pre>
-            </div>
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/api/completed-matches</span>
-                <span class="endpoint-desc">Recently completed matches</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns a list of recently completed cricket matches with final scores and results.</p>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl {{ base_url }}/api/completed-matches</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "status": "success",
-  "cached": true,
-  "cache_ttl_seconds": 10,
-  "count": 8,
-  "matches": [
-    {
-      "match_id": "12345",
-      "title": "India vs Australia, 3rd T20I",
-      "series": "Australia tour of India",
-      "match_type": "International",
-      "match_format": "T20",
-      "status": "India won by 5 wkts",
-      "state": "Complete",
-      "start_date": "2025-03-22 07:30:00 PM IST",
-      "venue": "Wankhede Stadium, Mumbai",
-      "teams": [
-        {"name": "India", "short_name": "IND", "score": "186/5 (19.2)"},
-        {"name": "Australia", "short_name": "AUS", "score": "185/7 (20)"}
-      ]
-    }
-  ]
-}</code></pre>
-            </div>
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/api/running-matches</span>
-                <span class="endpoint-desc">Currently in-progress matches</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns a list of cricket matches that are currently in progress (live play, toss, innings break, etc.).</p>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl {{ base_url }}/api/running-matches</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "status": "success",
-  "cached": true,
-  "cache_ttl_seconds": 10,
-  "count": 2,
-  "matches": [
-    {
-      "match_id": "54321",
-      "title": "India vs Australia, 3rd T20I",
-      "series": "Australia tour of India",
-      "match_type": "International",
-      "match_format": "T20",
-      "status": "India need 42 runs in 30 balls",
-      "state": "In Progress",
-      "start_date": "2025-03-22 07:30:00 PM IST",
-      "venue": "Wankhede Stadium, Mumbai",
-      "teams": [
-        {"name": "India", "short_name": "IND", "score": "144/3 (15)"},
-        {"name": "Australia", "short_name": "AUS", "score": "185/7 (20)"}
-      ]
-    }
-  ]
-}</code></pre>
-            </div>
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-                <span class="method">GET</span>
-                <span class="path">/api/match-score?id={match_id}</span>
-                <span class="endpoint-desc">Detailed live score</span>
-            </div>
-            <div class="endpoint-body">
-                <p>Returns detailed live score for a specific match including batters, bowlers, run rate, and match status.</p>
-                <table class="param-table">
-                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
-                    <tr>
-                        <td><span class="param-name">id</span> <span class="param-required">required</span></td>
-                        <td>string</td>
-                        <td>Match ID from Cricbuzz (get from <span class="inline-code">/api/live-matches</span>)</td>
-                    </tr>
-                </table>
-                <div class="section-label">Example Request</div>
-                <pre><code>curl "{{ base_url }}/api/match-score?id=12345"</code></pre>
-                <div class="section-label">Example Response</div>
-                <pre><code>{
-  "status": "success",
-  "data": {
-    "match_id": "12345",
-    "title": "India vs Australia, 3rd T20I",
-    "status": "India need 42 runs in 30 balls",
-    "status_type": "in_progress",
-    "live_score": "IND 144/3 (15)",
-    "run_rate": "9.60",
-    "batters": [
-      {"name": "Virat Kohli", "runs": "68", "balls": "42", "strike_rate": "161.90"}
-    ],
-    "bowlers": [
-      {"name": "Pat Cummins", "overs": "3", "runs_conceded": "28", "wickets": "1", "economy": "9.33"}
-    ]
-  }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- IPL 2025 -->
-        <h2>IPL 2025</h2>
+        <!-- IPL 2026 -->
+        <h2>IPL 2026</h2>
 
         <div class="endpoint">
             <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
@@ -433,7 +243,7 @@
                 <span class="endpoint-desc">IPL live scores</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns live scores for all ongoing IPL 2025 matches with the fastest update speed.</p>
+                <p>Returns live scores for all ongoing IPL 2026 matches with the fastest update speed.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/live-scores</code></pre>
             </div>
@@ -446,7 +256,7 @@
                 <span class="endpoint-desc">Full match schedule</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the complete IPL 2025 match schedule with dates, teams, and venues.</p>
+                <p>Returns the complete IPL 2026 match schedule with dates, teams, and venues.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/schedule</code></pre>
             </div>
@@ -459,7 +269,7 @@
                 <span class="endpoint-desc">Current standings</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the current IPL 2025 points table with matches, wins, losses, and points for each team.</p>
+                <p>Returns the current IPL 2026 points table with matches, wins, losses, and points for each team.</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/ipl/points-table</code></pre>
             </div>
@@ -541,7 +351,7 @@
         </div>
 
         <footer>
-            <p>Data sourced from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a> and <a href="https://github.com/cu-sanjay/IPL-2025-API-Free" target="_blank">IPL 2025 API</a>.</p>
+            <p>Data sourced from <a href="https://github.com/cu-sanjay/IPL-2025-API-Free" target="_blank">IPL 2026 API</a>.</p>
             <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited.</p>
         </footer>
     </div>
