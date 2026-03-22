@@ -1,3 +1,5 @@
+import asyncio
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncGenerator
@@ -9,6 +11,12 @@ from jinja2 import Environment, FileSystemLoader
 
 from app.scrapers.cache import cache
 from app.scrapers.cricbuzz import fetch_live_matches, fetch_match_score
+from app.scrapers.cricket_api_scraper import (
+    fetch_score_flat,
+    fetch_score_live,
+    _not_found_flat,
+    _not_found_live,
+)
 from app.scrapers.ipl_api import (
     TEAM_CODES,
     fetch_ipl_live_scores,
@@ -18,20 +26,45 @@ from app.scrapers.ipl_api import (
     fetch_ipl_winners,
 )
 
+logger = logging.getLogger(__name__)
+
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 jinja_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=True)
 
 
+AUTO_UPDATE_INTERVAL = 10  # seconds
+
+
+async def _auto_update_loop() -> None:
+    """Background task that refreshes live match data every AUTO_UPDATE_INTERVAL seconds."""
+    while True:
+        try:
+            data = await fetch_live_matches()
+            if data:
+                await cache.set("live_matches", data)
+                logger.info("Auto-update: refreshed %d live matches", len(data))
+        except Exception:
+            logger.exception("Auto-update: failed to refresh live matches")
+        await asyncio.sleep(AUTO_UPDATE_INTERVAL)
+
+
 @asynccontextmanager
 async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
+    task = asyncio.create_task(_auto_update_loop())
     yield
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
     await cache.clear()
 
 
 app = FastAPI(
     title="Cricket API",
-    description="Free, unlimited, self-hosted JSON API for live cricket scores and IPL data.",
-    version="1.0.0",
+    description="Free, unlimited, self-hosted JSON API for live cricket scores and IPL data. "
+    "Compatible with sanwebinfo/cricket-api format.",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -242,3 +275,50 @@ async def ipl_teams() -> dict:
         "count": len(TEAM_CODES),
         "teams": TEAM_CODES,
     }
+
+
+# ---------------------------------------------------------------------------
+# Cricket-API compatible endpoints (sanwebinfo/cricket-api format)
+# ---------------------------------------------------------------------------
+@app.get("/score")
+async def cricket_api_score(
+    id: str = Query(None, description="Match ID from Cricbuzz"),
+) -> dict:
+    """Get match score in flat JSON format (cricket-api compatible).
+
+    Same response structure as https://github.com/sanwebinfo/cricket-api /score endpoint.
+    """
+    if not id:
+        return _not_found_flat()
+
+    cache_key = f"cricket_api_score_{id}"
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    data = await fetch_score_flat(id)
+    if data.get("title") != "Data Not Found":
+        await cache.set(cache_key, data)
+    return data
+
+
+@app.get("/score/live")
+async def cricket_api_score_live(
+    id: str = Query(None, description="Match ID from Cricbuzz"),
+) -> dict:
+    """Get match score in nested JSON format (cricket-api compatible).
+
+    Same response structure as https://github.com/sanwebinfo/cricket-api /score/live endpoint.
+    """
+    if not id:
+        return _not_found_live()
+
+    cache_key = f"cricket_api_live_{id}"
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    data = await fetch_score_live(id)
+    if data.get("livescore", {}).get("title") != "Data Not Found":
+        await cache.set(cache_key, data)
+    return data
