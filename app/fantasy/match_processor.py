@@ -18,6 +18,7 @@ from app.fantasy.points import (
     parse_overs_to_float,
 )
 from app.fantasy.scorecard import fetch_full_scorecard, _count_lbw_bowled
+from app.fantasy.player_history import record_player_match_points
 
 logger = logging.getLogger(__name__)
 
@@ -159,6 +160,7 @@ async def process_match(match_id: str, force_refresh: bool = False) -> dict:
             batting=data.get("batting"),
             bowling=data.get("bowling"),
             fielding=data.get("fielding"),
+            playing_xi=True,
         )
         entry = {
             "name": name,
@@ -177,6 +179,20 @@ async def process_match(match_id: str, force_refresh: bool = False) -> dict:
 
     # Sort by total points descending
     results.sort(key=lambda x: x["fantasy_points"]["total_points"], reverse=True)
+
+    # Record each player's match points into the per-player history store
+    for player_entry in results:
+        record_player_match_points(
+            player_name=player_entry["name"],
+            match_id=match_id,
+            team=player_entry.get("team", "unknown"),
+            role=player_entry.get("role", "Unknown"),
+            image_url=player_entry.get("image_url"),
+            fantasy_points=player_entry["fantasy_points"],
+            batting_stats=player_entry.get("batting_stats"),
+            bowling_stats=player_entry.get("bowling_stats"),
+            fielding_stats=player_entry.get("fielding_stats"),
+        )
 
     result = {
         "match_id": match_id,

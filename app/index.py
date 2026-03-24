@@ -28,6 +28,12 @@ from app.data import (
 )
 from app.fantasy.admin import ADMIN_TOKEN, verify_admin_token
 from app.fantasy.match_processor import clear_match_cache, process_match
+from app.fantasy.player_history import (
+    get_player_all_matches,
+    get_player_match_points,
+    get_player_cumulative_total,
+    get_team_match_history,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -346,22 +352,29 @@ async def fantasy_scoring_rules() -> dict:
         "rules": {
             "batting": {
                 "run_scored": "+1 point per run",
-                "boundary_4": "+1 bonus per four",
-                "six": "+2 bonus per six",
-                "half_century": "+8 bonus (50 runs)",
-                "century": "+16 bonus (100 runs)",
+                "boundary_4": "+4 bonus per four (total +5 per four: 1 run + 4 bonus)",
+                "six": "+7 bonus per six (total +8 per six: 1 run + 7 bonus)",
+                "milestones": {
+                    "25_runs": "+4 bonus",
+                    "50_runs": "+8 bonus",
+                    "75_runs": "+12 bonus",
+                    "100_runs": "+16 bonus",
+                },
                 "duck": "-2 points (batters/WK/all-rounders only)",
                 "strike_rate": {
                     "above_170": "+6",
                     "150_to_170": "+4",
                     "130_to_150": "+2",
-                    "below_60": "-6",
+                    "60_to_70": "-2",
+                    "50_to_60": "-4",
+                    "below_50": "-6",
                     "note": "Only applies if >= 10 balls faced",
                 },
+                "example": "50 runs with 5 fours = 50 (runs) + 20 (5×4 boundary bonus) + 8 (50-run milestone) = 78 points",
             },
             "bowling": {
                 "wicket": "+25 points per wicket",
-                "lbw_or_bowled_bonus": "+8 per LBW/Bowled dismissal",
+                "lbw_or_bowled_bonus": "+8 per LBW/Bowled dismissal (total +33 per LBW/Bowled wicket)",
                 "three_wickets": "+4 bonus",
                 "four_wickets": "+8 bonus",
                 "five_wickets": "+16 bonus",
@@ -370,18 +383,138 @@ async def fantasy_scoring_rules() -> dict:
                     "below_5": "+6",
                     "5_to_6": "+4",
                     "6_to_7": "+2",
-                    "above_12": "-6",
+                    "9_to_10": "-2",
+                    "10_to_11": "-4",
+                    "above_11": "-6",
                     "note": "Only applies if >= 2 overs bowled",
                 },
             },
             "fielding": {
                 "catch": "+8 points per catch",
-                "three_catches_bonus": "+4 bonus",
+                "three_catches": "+28 total (24 catch points + 4 bonus)",
                 "stumping": "+12 points per stumping",
                 "run_out_direct": "+12 points per direct hit",
                 "run_out_assist": "+6 points per assist",
             },
+            "extra": {
+                "playing_xi": "+4 points for being in Playing XI",
+                "duck": "-2 points",
+            },
         },
+    }
+
+
+# ---------------------------------------------------------------------------
+# Player Match-Wise Points endpoints
+# ---------------------------------------------------------------------------
+@app.get("/api/fantasy/player/{player_name}/matches")
+async def fantasy_player_match_history(player_name: str) -> dict:
+    """Get all match-wise fantasy points for a specific player.
+
+    Each match entry has independent points (starting from 0).
+    Old match data is always preserved.
+    """
+    matches = get_player_all_matches(player_name)
+    if not matches:
+        return {
+            "status": "success",
+            "player": player_name,
+            "message": "No match data found. Process matches first via /api/fantasy/points/{match_id}",
+            "matches": [],
+            "total_matches": 0,
+        }
+    return {
+        "status": "success",
+        "player": matches[0].get("player_name", player_name),
+        "team": matches[0].get("team", "unknown"),
+        "role": matches[0].get("role", "Unknown"),
+        "image_url": matches[0].get("image_url"),
+        "matches": matches,
+        "total_matches": len(matches),
+    }
+
+
+@app.get("/api/fantasy/player/{player_name}/match/{match_id}")
+async def fantasy_player_single_match(
+    player_name: str,
+    match_id: str,
+) -> dict:
+    """Get a player's fantasy points for a specific match.
+
+    Points for each match are independent and start from 0.
+    """
+    entry = get_player_match_points(player_name, match_id)
+    if not entry:
+        return {
+            "status": "error",
+            "error": f"No data for player '{player_name}' in match '{match_id}'. "
+                     f"Process the match first via /api/fantasy/points/{match_id}",
+        }
+    return {
+        "status": "success",
+        "data": entry,
+    }
+
+
+@app.get("/api/fantasy/player/{player_name}/total")
+async def fantasy_player_cumulative(player_name: str) -> dict:
+    """Get cumulative total fantasy points for a player across all matches.
+
+    Shows per-match breakdown plus overall totals.
+    """
+    summary = get_player_cumulative_total(player_name)
+    return {
+        "status": "success",
+        "data": summary,
+    }
+
+
+@app.get("/api/fantasy/team/{team_code}/match-history")
+async def fantasy_team_match_history(team_code: str) -> dict:
+    """Get match-wise fantasy points for all players in a team.
+
+    Returns every recorded match entry for players belonging to this team.
+    """
+    entries = get_team_match_history(team_code)
+    if not entries:
+        return {
+            "status": "success",
+            "team": team_code.lower(),
+            "message": "No match history found. Process matches first via /api/fantasy/points/{match_id}",
+            "players": [],
+            "total_entries": 0,
+        }
+
+    # Group by player for a cleaner response
+    player_map: dict[str, list[dict]] = {}
+    for entry in entries:
+        pname = entry.get("player_name", "Unknown")
+        if pname not in player_map:
+            player_map[pname] = []
+        player_map[pname].append({
+            "match_id": entry["match_id"],
+            "fantasy_points": entry["fantasy_points"],
+            "batting_stats": entry.get("batting_stats"),
+            "bowling_stats": entry.get("bowling_stats"),
+            "fielding_stats": entry.get("fielding_stats"),
+        })
+
+    players_list = []
+    for pname, match_entries in player_map.items():
+        first = next(e for e in entries if e.get("player_name") == pname)
+        players_list.append({
+            "player_name": pname,
+            "role": first.get("role", "Unknown"),
+            "image_url": first.get("image_url"),
+            "matches": match_entries,
+            "total_matches": len(match_entries),
+        })
+
+    return {
+        "status": "success",
+        "team": team_code.lower(),
+        "players": players_list,
+        "total_players": len(players_list),
     }
 
 

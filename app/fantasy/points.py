@@ -1,10 +1,12 @@
 """Fantasy points calculation engine for IPL 2026.
 
 Implements the complete scoring system:
-- Batting: runs, boundaries, sixes, half-centuries, centuries, ducks
-- Bowling: wickets, LBW/bowled bonus, 3/4/5-wicket hauls, maidens
-- Fielding: catches, 3-catch bonus, stumpings, run outs
+- Batting: runs (+1), boundary (+4 bonus), six (+7 bonus), milestones (25/50/75/100)
+- Bowling: wickets (+25), LBW/bowled (+8 bonus), 3/4/5-wicket hauls, maidens
+- Fielding: catches (+8), 3-catch bonus (+4), stumpings, run outs
 - Strike rate & economy rate bonuses/penalties
+- Playing XI bonus (+4)
+- Duck penalty (-2)
 """
 
 
@@ -25,25 +27,29 @@ def calculate_batting_points(
         breakdown["runs"] = runs
         points += runs
 
-    # +1 bonus per four
+    # +4 bonus per boundary (four)
     if fours > 0:
-        breakdown["fours_bonus"] = fours
-        points += fours
+        breakdown["fours_bonus"] = fours * 4
+        points += fours * 4
 
-    # +2 bonus per six
+    # +7 bonus per six
     if sixes > 0:
-        breakdown["sixes_bonus"] = sixes * 2
-        points += sixes * 2
+        breakdown["sixes_bonus"] = sixes * 7
+        points += sixes * 7
 
-    # Half-century bonus +8
-    if runs >= 50 and runs < 100:
-        breakdown["half_century_bonus"] = 8
-        points += 8
-
-    # Century bonus +16
+    # Milestone bonuses (only highest applicable)
     if runs >= 100:
         breakdown["century_bonus"] = 16
         points += 16
+    elif runs >= 75:
+        breakdown["75_runs_bonus"] = 12
+        points += 12
+    elif runs >= 50:
+        breakdown["half_century_bonus"] = 8
+        points += 8
+    elif runs >= 25:
+        breakdown["25_runs_bonus"] = 4
+        points += 4
 
     # Duck -2 (for batters, WK, all-rounders)
     if runs == 0 and is_out and is_batter_or_wk_or_allrounder:
@@ -62,7 +68,13 @@ def calculate_batting_points(
         elif sr >= 130:
             breakdown["strike_rate_bonus"] = 2
             points += 2
-        elif sr < 60:
+        elif sr >= 60 and sr < 70:
+            breakdown["strike_rate_penalty"] = -2
+            points -= 2
+        elif sr >= 50 and sr < 60:
+            breakdown["strike_rate_penalty"] = -4
+            points -= 4
+        elif sr < 50:
             breakdown["strike_rate_penalty"] = -6
             points -= 6
 
@@ -118,7 +130,13 @@ def calculate_bowling_points(
         elif economy <= 7:
             breakdown["economy_bonus"] = 2
             points += 2
-        elif economy > 12:
+        elif economy >= 9 and economy <= 10:
+            breakdown["economy_penalty"] = -2
+            points -= 2
+        elif economy > 10 and economy <= 11:
+            breakdown["economy_penalty"] = -4
+            points -= 4
+        elif economy > 11:
             breakdown["economy_penalty"] = -6
             points -= 6
 
@@ -167,16 +185,22 @@ def calculate_total_fantasy_points(
     batting: dict | None = None,
     bowling: dict | None = None,
     fielding: dict | None = None,
+    playing_xi: bool = True,
 ) -> dict:
-    """Combine all point categories into a total fantasy score."""
+    """Combine all point categories into a total fantasy score.
+
+    playing_xi: If True, adds +4 points for being in the Playing XI.
+    """
     batting_pts = batting if batting else {"total": 0, "breakdown": {}}
     bowling_pts = bowling if bowling else {"total": 0, "breakdown": {}}
     fielding_pts = fielding if fielding else {"total": 0, "breakdown": {}}
 
-    total = batting_pts["total"] + bowling_pts["total"] + fielding_pts["total"]
+    playing_xi_pts = 4 if playing_xi else 0
+    total = batting_pts["total"] + bowling_pts["total"] + fielding_pts["total"] + playing_xi_pts
 
     return {
         "total_points": total,
+        "playing_xi_bonus": playing_xi_pts,
         "batting_points": batting_pts["total"],
         "bowling_points": bowling_pts["total"],
         "fielding_points": fielding_pts["total"],

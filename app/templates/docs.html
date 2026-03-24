@@ -621,9 +621,216 @@
                 <span class="endpoint-desc">Scoring rules</span>
             </div>
             <div class="endpoint-body">
-                <p>Returns the complete fantasy scoring rules including batting, bowling, fielding, strike rate, and economy rate points.</p>
+                <p>Returns the complete fantasy scoring rules including batting, bowling, fielding, strike rate, economy rate, and Playing XI bonus.</p>
+                <div class="section-label">Scoring Summary</div>
+                <p><strong>Batting:</strong> +1/run, +4 bonus/four, +7 bonus/six, milestones (+4 at 25, +8 at 50, +12 at 75, +16 at 100), duck -2</p>
+                <p><strong>Strike Rate (min 10 balls):</strong> >170: +6, 150-170: +4, 130-150: +2, 60-70: -2, 50-60: -4, &lt;50: -6</p>
+                <p><strong>Bowling:</strong> +25/wicket, +8 LBW/bowled bonus, +12/maiden, haul bonus (+4 for 3W, +8 for 4W, +16 for 5W)</p>
+                <p><strong>Economy (min 2 overs):</strong> &lt;5: +6, 5-6: +4, 6-7: +2, 9-10: -2, 10-11: -4, >11: -6</p>
+                <p><strong>Fielding:</strong> +8/catch, +4 bonus for 3+ catches, +12/stumping, +12/run out direct, +6/run out assist</p>
+                <p><strong>Extra:</strong> +4 Playing XI bonus, -2 duck penalty</p>
+                <p><strong>Example:</strong> 50 runs with 5 fours = 50 (runs) + 20 (5x4 boundary bonus) + 8 (50-run milestone) + 4 (Playing XI) = 82 points</p>
                 <div class="section-label">Example Request</div>
                 <pre><code>curl {{ base_url }}/api/fantasy/scoring-rules</code></pre>
+            </div>
+        </div>
+
+        <!-- PLAYER MATCH-WISE POINTS -->
+        <h2>Player Match-Wise Points</h2>
+
+        <div class="refresh-note">
+            <strong>How it works:</strong> Each match's points start from <strong>0</strong>. When you process a match via <code class="inline-code">/api/fantasy/points/{match_id}</code>, each player's points are recorded independently. Old match data is always preserved. You can then query any player's full match history, specific match points, or cumulative totals.
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/player/{player_name}/matches</span>
+                <span class="endpoint-desc">Player match history</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns all match-wise fantasy points for a specific player. Each match entry has independent points (starting from 0). Old match data is always preserved.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">player_name</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Player name (e.g., Virat Kohli)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/player/Virat%20Kohli/matches</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "player": "Virat Kohli",
+  "team": "rcb",
+  "role": "Batsman",
+  "matches": [
+    {
+      "player_name": "Virat Kohli",
+      "match_id": "149618",
+      "team": "rcb",
+      "role": "Batsman",
+      "fantasy_points": {
+        "total_points": 85,
+        "batting_points": 75,
+        "bowling_points": 0,
+        "fielding_points": 10
+      },
+      "batting_stats": { "runs": 52, "balls": 35, "fours": 6, "sixes": 2 }
+    },
+    {
+      "player_name": "Virat Kohli",
+      "match_id": "149625",
+      "team": "rcb",
+      "role": "Batsman",
+      "fantasy_points": {
+        "total_points": 42,
+        "batting_points": 42,
+        "bowling_points": 0,
+        "fielding_points": 0
+      },
+      "batting_stats": { "runs": 30, "balls": 22, "fours": 4, "sixes": 1 }
+    }
+  ],
+  "total_matches": 2
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/player/{player_name}/match/{match_id}</span>
+                <span class="endpoint-desc">Player single match points</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns a player's fantasy points for a specific match. Points for each match are independent and always start from 0.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">player_name</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Player name (e.g., Virat Kohli)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">match_id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Cricbuzz match ID</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/player/Virat%20Kohli/match/149618</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "data": {
+    "player_name": "Virat Kohli",
+    "match_id": "149618",
+    "team": "rcb",
+    "role": "Batsman",
+    "fantasy_points": {
+      "total_points": 85,
+      "batting_points": 75,
+      "bowling_points": 0,
+      "fielding_points": 10,
+      "batting_breakdown": {
+        "runs": 52, "fours_bonus": 6,
+        "sixes_bonus": 4, "half_century_bonus": 8,
+        "strike_rate_bonus": 4
+      }
+    },
+    "batting_stats": {
+      "runs": 52, "balls": 35,
+      "fours": 6, "sixes": 2,
+      "strike_rate": 148.57, "is_out": true
+    }
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/player/{player_name}/total</span>
+                <span class="endpoint-desc">Player cumulative total</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the cumulative total fantasy points for a player across all processed matches, with a per-match breakdown.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">player_name</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Player name (e.g., Virat Kohli)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/player/Virat%20Kohli/total</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "data": {
+    "player_name": "Virat Kohli",
+    "team": "rcb",
+    "role": "Batsman",
+    "total_matches": 2,
+    "cumulative_total_points": 127,
+    "cumulative_batting_points": 117,
+    "cumulative_bowling_points": 0,
+    "cumulative_fielding_points": 10,
+    "matches": [
+      { "match_id": "149618", "points": 85, "batting_points": 75, "bowling_points": 0, "fielding_points": 10 },
+      { "match_id": "149625", "points": 42, "batting_points": 42, "bowling_points": 0, "fielding_points": 0 }
+    ]
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/team/{team_code}/match-history</span>
+                <span class="endpoint-desc">Team match history</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns match-wise fantasy points for all players belonging to a team, grouped by player with per-match data.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">team_code</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Team abbreviation code (mi, csk, rcb, etc.)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/team/rcb/match-history</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "team": "rcb",
+  "players": [
+    {
+      "player_name": "Virat Kohli",
+      "role": "Batsman",
+      "matches": [
+        {
+          "match_id": "149618",
+          "fantasy_points": { "total_points": 85, "batting_points": 75, "bowling_points": 0, "fielding_points": 10 }
+        },
+        {
+          "match_id": "149625",
+          "fantasy_points": { "total_points": 42, "batting_points": 42, "bowling_points": 0, "fielding_points": 0 }
+        }
+      ],
+      "total_matches": 2
+    }
+  ],
+  "total_players": 1
+}</code></pre>
             </div>
         </div>
 

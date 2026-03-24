@@ -47,6 +47,15 @@ Free, unlimited, self-hosted JSON API for IPL 2026 data **with Fantasy Points sy
 | `GET /api/fantasy/leaderboard?match_id={id}` | Fantasy points leaderboard for a match (sorted by total points) |
 | `GET /api/fantasy/scoring-rules` | Complete fantasy scoring rules |
 
+### Player Match-Wise Points
+
+| Endpoint | Description |
+|---|---|
+| `GET /api/fantasy/player/{player_name}/matches` | All match-wise fantasy points for a player (each match starts from 0, old data preserved) |
+| `GET /api/fantasy/player/{player_name}/match/{match_id}` | A player's fantasy points for a specific match |
+| `GET /api/fantasy/player/{player_name}/total` | Cumulative total points across all matches with per-match breakdown |
+| `GET /api/fantasy/team/{team_code}/match-history` | Match-wise points for all players in a team, grouped by player |
+
 ### Admin (requires `Authorization: Bearer <token>`)
 
 | Endpoint | Description |
@@ -69,38 +78,60 @@ Free, unlimited, self-hosted JSON API for IPL 2026 data **with Fantasy Points sy
 | Action | Points |
 |---|---|
 | Run scored | +1 |
-| Boundary (4) | +1 bonus |
-| Six | +2 bonus |
-| Half-century (50) | +8 bonus |
-| Century (100) | +16 bonus |
+| Boundary (4) | +4 bonus (total +5 per four) |
+| Six | +7 bonus (total +8 per six) |
+| 25 runs milestone | +4 bonus |
+| 50 runs milestone | +8 bonus |
+| 75 runs milestone | +12 bonus |
+| 100 runs milestone | +16 bonus |
 | Duck (0, dismissed) | -2 (batters/WK/all-rounders) |
-| Strike Rate > 170 | +6 |
-| Strike Rate 150-170 | +4 |
-| Strike Rate 130-150 | +2 |
-| Strike Rate < 60 | -6 |
+
+**Example:** 50 runs with 5 fours = 50 (runs) + 20 (5×4 boundary bonus) + 8 (50-run milestone) = 78 points
+
+### Strike Rate (min 10 balls faced)
+| Strike Rate | Points |
+|---|---|
+| > 170 | +6 |
+| 150-170 | +4 |
+| 130-150 | +2 |
+| 60-70 | -2 |
+| 50-60 | -4 |
+| < 50 | -6 |
 
 ### Bowling Points
 | Action | Points |
 |---|---|
 | Wicket | +25 |
-| LBW/Bowled bonus | +8 |
+| LBW/Bowled bonus | +8 (total +33 per LBW/Bowled wicket) |
 | 3 wickets | +4 bonus |
 | 4 wickets | +8 bonus |
 | 5 wickets | +16 bonus |
 | Maiden over | +12 |
-| Economy < 5 | +6 |
-| Economy 5-6 | +4 |
-| Economy 6-7 | +2 |
-| Economy > 12 | -6 |
+
+### Economy Rate (min 2 overs bowled)
+| Economy | Points |
+|---|---|
+| < 5 | +6 |
+| 5-6 | +4 |
+| 6-7 | +2 |
+| 9-10 | -2 |
+| 10-11 | -4 |
+| > 11 | -6 |
 
 ### Fielding Points
 | Action | Points |
 |---|---|
 | Catch | +8 |
-| 3 catches bonus | +4 |
+| 3 catches | +28 (24 catch points + 4 bonus) |
 | Stumping | +12 |
 | Run out (direct) | +12 |
 | Run out (assist) | +6 |
+
+### Extra
+| Action | Points |
+|---|---|
+| Playing XI | +4 |
+| Duck | -2 |
 
 ## Sample Responses
 
