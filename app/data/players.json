@@ -1,0 +1,2432 @@
+{
+  "csk": [
+    {
+      "name": "Zak Foulkes",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/393500/393574.2.png"
+    },
+    {
+      "name": "Aman Khan",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.04,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/414300/414333.2.png"
+    },
+    {
+      "name": "Matthew Short",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": 0.17,
+      "sold_price_cr": 0.17,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/384200/384252.1.png"
+    },
+    {
+      "name": "Prashant Veer",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 1.58,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/410600/410613.4.png"
+    },
+    {
+      "name": "Ramakrishna Ghosh",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398613.4.png"
+    },
+    {
+      "name": "Jamie Overton",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.17,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/324200/324243.1.png"
+    },
+    {
+      "name": "Anshul Kamboj",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.38,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/381300/381389.1.png"
+    },
+    {
+      "name": "Shivam Dube",
+      "role": "All Rounder",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 1.33,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383700/383773.1.png"
+    },
+    {
+      "name": "Kartik Sharma",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 1.58,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390800/390871.2.png"
+    },
+    {
+      "name": "Sarfaraz Khan",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/393600/393683.2.png"
+    },
+    {
+      "name": "Ayush Mhatre",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390300/390331.2.png"
+    },
+    {
+      "name": "Urvil Patel",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/391800/391896.2.png"
+    },
+    {
+      "name": "Dewald Brevis",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.24,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/335100/335134.1.png"
+    },
+    {
+      "name": "MS Dhoni",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/319900/319946.3.png"
+    },
+    {
+      "name": "Ruturaj Gaikwad",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322200/322236.1.png"
+    },
+    {
+      "name": "Sanju Samson",
+      "role": "Batsman",
+      "team": "csk",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322700/322701.1.png"
+    }
+  ],
+  "dc": [
+    {
+      "name": "Auqib Nabi",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.93,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/413700/413761.2.png"
+    },
+    {
+      "name": "Ajay Mandal",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/397400/397422.4.png"
+    },
+    {
+      "name": "Tripurana Vijay",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/397400/397428.4.png"
+    },
+    {
+      "name": "Madhav Tiwari",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.04,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/397400/397423.7.png"
+    },
+    {
+      "name": "Vipraj Nigam",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.06,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/397400/397429.4.png"
+    },
+    {
+      "name": "Sameer Rizvi",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.11,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/397400/397425.4.png"
+    },
+    {
+      "name": "Ashutosh Sharma",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.42,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/380600/380694.1.png"
+    },
+    {
+      "name": "Nitish Rana",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.47,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/323000/323054.1.png"
+    },
+    {
+      "name": "Axar Patel",
+      "role": "All Rounder",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 1.83,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/331100/331164.2.png"
+    },
+    {
+      "name": "Sahil Parakh",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Pathum Nissanka",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.44,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/323000/323070.1.png"
+    },
+    {
+      "name": "Prithvi Shaw",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322600/322622.1.png"
+    },
+    {
+      "name": "Ben Duckett",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383154.1.png"
+    },
+    {
+      "name": "David Miller",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316655.1.png"
+    },
+    {
+      "name": "Karun Nair",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.06,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/399200/399231.5.png"
+    },
+    {
+      "name": "Abishek Porel",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/393400/393462.2.png"
+    },
+    {
+      "name": "Tristan Stubbs",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 1.11,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/348500/348577.1.png"
+    },
+    {
+      "name": "KL Rahul",
+      "role": "Batsman",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 1.56,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/319900/319942.3.png"
+    },
+    {
+      "name": "Lungi Ngidi",
+      "role": "Bowler",
+      "team": "dc",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322069.1.png"
+    },
+    {
+      "name": "Kyle Jamieson",
+      "role": "Bowler",
+      "team": "dc",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/321200/321236.1.png"
+    },
+    {
+      "name": "Dushmantha Chameera",
+      "role": "Bowler",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/319800/319862.2.png"
+    },
+    {
+      "name": "Mukesh Kumar",
+      "role": "Bowler",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 0.89,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/373900/373907.1.png"
+    },
+    {
+      "name": "T Natarajan",
+      "role": "Bowler",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 1.19,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322600/322699.1.png"
+    },
+    {
+      "name": "Mitchell Starc",
+      "role": "Bowler",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 1.31,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390900/390978.5.png"
+    },
+    {
+      "name": "Kuldeep Yadav",
+      "role": "Bowler",
+      "team": "dc",
+      "base_price_cr": null,
+      "sold_price_cr": 1.47,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/319900/319943.2.png"
+    }
+  ],
+  "gt": [
+    {
+      "name": "Jason Holder",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.78,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316673.1.png"
+    },
+    {
+      "name": "Nishant Sindhu",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/345000/345097.1.png"
+    },
+    {
+      "name": "Jayant Yadav",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322500/322553.1.png"
+    },
+    {
+      "name": "Arshad Khan",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.14,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398617.5.png"
+    },
+    {
+      "name": "Sai Kishore",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.22,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/362500/362558.6.png"
+    },
+    {
+      "name": "Washington Sundar",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.36,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322600/322619.1.png"
+    },
+    {
+      "name": "M Shahrukh Khan",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/359700/359756.1.png"
+    },
+    {
+      "name": "Rahul Tewatia",
+      "role": "All Rounder",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322200/322269.1.png"
+    },
+    {
+      "name": "Tom Banton",
+      "role": "Batsman",
+      "team": "gt",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/323000/323099.1.png"
+    },
+    {
+      "name": "Anuj Rawat",
+      "role": "Batsman",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/359700/359757.1.png"
+    },
+    {
+      "name": "Kumar Kushagra",
+      "role": "Batsman",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.07,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398618.5.png"
+    },
+    {
+      "name": "Glenn Phillips",
+      "role": "Batsman",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383167.1.png"
+    },
+    {
+      "name": "Sai Sudharsan",
+      "role": "Batsman",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.94,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390600/390648.2.png"
+    },
+    {
+      "name": "Jos Buttler",
+      "role": "Batsman",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 1.75,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383143.1.png"
+    },
+    {
+      "name": "Shubman Gill",
+      "role": "Batsman",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 1.83,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398500/398534.2.png"
+    },
+    {
+      "name": "Luke Wood",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/324300/324367.1.png"
+    },
+    {
+      "name": "Prithvi Raj",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Ashok Sharma",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.1,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/341000/341036.1.png"
+    },
+    {
+      "name": "Manav Suthar",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398616.5.png"
+    },
+    {
+      "name": "Ishant Sharma",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316602.3.png"
+    },
+    {
+      "name": "Gurnoor Brar",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 0.14,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/359700/359764.1.png"
+    },
+    {
+      "name": "Prasidh Krishna",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 1.06,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/389500/389549.5.png"
+    },
+    {
+      "name": "Kagiso Rabada",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 1.19,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/320300/320376.1.png"
+    },
+    {
+      "name": "Mohammed Siraj",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 1.36,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322600/322611.1.png"
+    },
+    {
+      "name": "Rashid Khan",
+      "role": "Bowler",
+      "team": "gt",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383200/383228.1.png"
+    }
+  ],
+  "kkr": [
+    {
+      "name": "Daksh Kamra",
+      "role": "All Rounder",
+      "team": "kkr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/lazyimage-noaspect.svg"
+    },
+    {
+      "name": "Sarthak Ranjan",
+      "role": "All Rounder",
+      "team": "kkr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/lazyimage-noaspect.svg"
+    },
+    {
+      "name": "Rachin Ravindra",
+      "role": "All Rounder",
+      "team": "kkr",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383182.1.png"
+    },
+    {
+      "name": "Anukul Roy",
+      "role": "All Rounder",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.04,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/341000/341041.1.png"
+    },
+    {
+      "name": "Ramandeep Singh",
+      "role": "All Rounder",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/380600/380670.5.png"
+    },
+    {
+      "name": "Tim Seifert",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": 0.17,
+      "sold_price_cr": 0.17,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/321300/321313.1.png"
+    },
+    {
+      "name": "Rahul Tripathi",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/356800/356821.5.png"
+    },
+    {
+      "name": "Tejasvi Dahiya",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.33,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/414300/414336.2.png"
+    },
+    {
+      "name": "Cameron Green",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 2.8,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/321500/321569.2.png"
+    },
+    {
+      "name": "Finn Allen",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383164.1.png"
+    },
+    {
+      "name": "Manish Pandey",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/323000/323052.1.png"
+    },
+    {
+      "name": "Rovman Powell",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.17,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322100/322172.1.png"
+    },
+    {
+      "name": "Ajinkya Rahane",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.17,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316620.3.png"
+    },
+    {
+      "name": "Angkrish Raghuvanshi",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.33,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/345000/345093.1.png"
+    },
+    {
+      "name": "Rinku Singh",
+      "role": "Batsman",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/341000/341043.1.png"
+    },
+    {
+      "name": "Mustafizur Rahman",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 1.02,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/319700/319734.3.png"
+    },
+    {
+      "name": "Prashant Solanki",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/409800/409817.png"
+    },
+    {
+      "name": "Kartik Tyagi",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/339100/339150.1.png"
+    },
+    {
+      "name": "Akash Deep",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": 0.11,
+      "sold_price_cr": 0.11,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/403300/403361.2.png"
+    },
+    {
+      "name": "Matheesha Pathirana",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 2.0,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/355400/355402.1.png"
+    },
+    {
+      "name": "Umran Malik",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/343200/343263.1.png"
+    },
+    {
+      "name": "Vaibhav Arora",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.2,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/389500/389547.5.png"
+    },
+    {
+      "name": "Harshit Rana",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/358000/358042.3.png"
+    },
+    {
+      "name": "Varun Chakravarthy",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.33,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/331100/331167.1.png"
+    },
+    {
+      "name": "Sunil Narine",
+      "role": "Bowler",
+      "team": "kkr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.33,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/320100/320119.1.png"
+    }
+  ],
+  "lsg": [
+    {
+      "name": "Wanindu Hasaranga",
+      "role": "All Rounder",
+      "team": "lsg",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322900/322946.1.png"
+    },
+    {
+      "name": "Arshin Kulkarni",
+      "role": "All Rounder",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/409100/409181.1.png"
+    },
+    {
+      "name": "Shahbaz Ahmed",
+      "role": "All Rounder",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.27,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/340300/340313.1.png"
+    },
+    {
+      "name": "Mitchell Marsh",
+      "role": "All Rounder",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.38,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/385700/385798.1.png"
+    },
+    {
+      "name": "Ayush Badoni",
+      "role": "All Rounder",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/411800/411842.png"
+    },
+    {
+      "name": "Abdul Samad",
+      "role": "All Rounder",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.47,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/339100/339145.1.png"
+    },
+    {
+      "name": "Akshat Raghuwanshi",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.24,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Josh Inglis",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.96,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/324200/324232.2.png"
+    },
+    {
+      "name": "Mukul Choudhary",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.29,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/410600/410621.3.png"
+    },
+    {
+      "name": "Himmat Singh",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/414700/414722.5.png"
+    },
+    {
+      "name": "Matthew Breetzke",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/388400/388422.5.png"
+    },
+    {
+      "name": "Aiden Markram",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322067.1.png"
+    },
+    {
+      "name": "Nicholas Pooran",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 2.33,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/320100/320109.2.png"
+    },
+    {
+      "name": "Rishabh Pant",
+      "role": "Batsman",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 3.0,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/323000/323036.1.png"
+    },
+    {
+      "name": "Naman Tiwari",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.11,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/410600/410627.3.png"
+    },
+    {
+      "name": "Anrich Nortje",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322080.1.png"
+    },
+    {
+      "name": "Digvesh Rathi",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398608.5.png"
+    },
+    {
+      "name": "Prince Yadav",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398611.5.png"
+    },
+    {
+      "name": "Arjun Tendulkar",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/359700/359770.1.png"
+    },
+    {
+      "name": "Akash Singh",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/299000/299091.5.png"
+    },
+    {
+      "name": "Manimaran Siddharth",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/330900/330975.5.png"
+    },
+    {
+      "name": "Mohsin Khan",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/397200/397280.4.png"
+    },
+    {
+      "name": "Avesh Khan",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 1.08,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322200/322244.1.png"
+    },
+    {
+      "name": "Mohammed Shami",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 1.11,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390300/390351.5.png"
+    },
+    {
+      "name": "Mayank Yadav",
+      "role": "Bowler",
+      "team": "lsg",
+      "base_price_cr": null,
+      "sold_price_cr": 1.22,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/373900/373904.1.png"
+    }
+  ],
+  "mi": [
+    {
+      "name": "Atharva Ankolekar",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Mayank Rawat",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Raj\u00a0Bawa",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/339100/339156.2.png"
+    },
+    {
+      "name": "Corbin Bosch",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/393600/393647.2.png"
+    },
+    {
+      "name": "Mitchell Santner",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383180.1.png"
+    },
+    {
+      "name": "Shardul Thakur",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.22,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322600/322696.1.png"
+    },
+    {
+      "name": "Will Jacks",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.58,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383155.1.png"
+    },
+    {
+      "name": "Naman Dhir",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.58,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/381300/381384.1.png"
+    },
+    {
+      "name": "Tilak Varma",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.89,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/381300/381391.1.png"
+    },
+    {
+      "name": "Hardik Pandya",
+      "role": "All Rounder",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 1.82,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/388300/388343.5.png"
+    },
+    {
+      "name": "Danish Malewar",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Quinton de Kock",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": 0.11,
+      "sold_price_cr": 0.11,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316668.1.png"
+    },
+    {
+      "name": "Robin Minz",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.07,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Ryan Rickelton",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.11,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/366300/366321.1.png"
+    },
+    {
+      "name": "Sherfane Rutherford",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.29,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322100/322173.1.png"
+    },
+    {
+      "name": "Rohit Sharma",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 1.81,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/385800/385819.2.png"
+    },
+    {
+      "name": "Suryakumar Yadav",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 1.82,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/331100/331163.1.png"
+    },
+    {
+      "name": "Mohd Izhar",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Raghu Sharma",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/400200/400220.2.png"
+    },
+    {
+      "name": "Ashwani Kumar",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/393400/393450.2.png"
+    },
+    {
+      "name": "Mayank Markande",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/355400/355403.1.png"
+    },
+    {
+      "name": "AM Ghazanfar",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 0.53,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390500/390546.2.png"
+    },
+    {
+      "name": "Deepak Chahar",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 1.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322700/322704.1.png"
+    },
+    {
+      "name": "Trent Boult",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 1.39,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383185.1.png"
+    },
+    {
+      "name": "Jasprit Bumrah",
+      "role": "Bowler",
+      "team": "mi",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/319900/319940.2.png"
+    }
+  ],
+  "pk": [
+    {
+      "name": "Cooper Connolly",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.33,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/347800/347820.1.png"
+    },
+    {
+      "name": "Ben Dwarshuis",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": 0.11,
+      "sold_price_cr": 0.49,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390000/390030.6.png"
+    },
+    {
+      "name": "Musheer Khan",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/392100/392178.2.png"
+    },
+    {
+      "name": "Suryansh Shedge",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/393100/393181.2.png"
+    },
+    {
+      "name": "Harpreet Brar",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.17,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/381300/381368.1.png"
+    },
+    {
+      "name": "Azmatullah Omarzai",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.27,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383200/383229.1.png"
+    },
+    {
+      "name": "Mitchell Owen",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.33,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/393100/393175.2.png"
+    },
+    {
+      "name": "Shashank Singh",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.61,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/380600/380696.1.png"
+    },
+    {
+      "name": "Marco Jansen",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.78,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/337100/337189.1.png"
+    },
+    {
+      "name": "Marcus Stoinis",
+      "role": "All Rounder",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 1.22,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/321500/321596.2.png"
+    },
+    {
+      "name": "Harnoor Singh",
+      "role": "Batsman",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/338200/338253.5.png"
+    },
+    {
+      "name": "Pyla Avinash",
+      "role": "Batsman",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/401100/401145.2.png"
+    },
+    {
+      "name": "Vishnu Vinod",
+      "role": "Batsman",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.11,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/359700/359774.1.png"
+    },
+    {
+      "name": "Priyansh Arya",
+      "role": "Batsman",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.42,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/391700/391706.2.png"
+    },
+    {
+      "name": "Prabhsimran Singh",
+      "role": "Batsman",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/358000/358040.1.png"
+    },
+    {
+      "name": "Nehal Wadhera",
+      "role": "Batsman",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.47,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/381300/381388.1.png"
+    },
+    {
+      "name": "Shreyas Iyer",
+      "role": "Batsman",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 2.97,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/323000/323035.1.png"
+    },
+    {
+      "name": "Praveen Dubey",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/lazyimage-noaspect.svg"
+    },
+    {
+      "name": "Vishal Nishad",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Xavier Bartlett",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.09,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390700/390741.2.png"
+    },
+    {
+      "name": "Yash Thakur",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.18,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/392800/392812.2.png"
+    },
+    {
+      "name": "Vijaykumar Vyshak",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.2,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390600/390654.2.png"
+    },
+    {
+      "name": "Lockie Ferguson",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383174.1.png"
+    },
+    {
+      "name": "Yuzvendra Chahal",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/319900/319955.1.png"
+    },
+    {
+      "name": "Arshdeep Singh",
+      "role": "Bowler",
+      "team": "pk",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390700/390798.5.png"
+    }
+  ],
+  "rcb": [
+    {
+      "name": "Kanishk Chouhan",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/412600/412643.5.png"
+    },
+    {
+      "name": "Vihaan Malhotra",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/412600/412644.5.png"
+    },
+    {
+      "name": "Mangesh Yadav",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.58,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Vicky Ostwal",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/408800/408829.png"
+    },
+    {
+      "name": "Satvik Deswal",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Venkatesh Iyer",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.78,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/337100/337187.1.png"
+    },
+    {
+      "name": "Swapnil Singh",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.06,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/384200/384254.1.png"
+    },
+    {
+      "name": "Romario Shepherd",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.17,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/403700/403798.2.png"
+    },
+    {
+      "name": "Jacob Bethell",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.29,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/388700/388704.5.png"
+    },
+    {
+      "name": "Tim David",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.33,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/340300/340305.1.png"
+    },
+    {
+      "name": "Krunal Pandya",
+      "role": "All Rounder",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.64,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322600/322614.1.png"
+    },
+    {
+      "name": "Jordan Cox",
+      "role": "Batsman",
+      "team": "rcb",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/325900/325912.1.png"
+    },
+    {
+      "name": "Devdutt Padikkal",
+      "role": "Batsman",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.22,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322200/322229.1.png"
+    },
+    {
+      "name": "Jitesh Sharma",
+      "role": "Batsman",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 1.22,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/380600/380690.1.png"
+    },
+    {
+      "name": "Rajat Patidar",
+      "role": "Batsman",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 1.22,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390500/390563.2.png"
+    },
+    {
+      "name": "Phil Salt",
+      "role": "Batsman",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 1.28,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383141.1.png"
+    },
+    {
+      "name": "Virat Kohli",
+      "role": "Batsman",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 2.33,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316605.3.png"
+    },
+    {
+      "name": "Jacob Duffy",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.22,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/387100/387134.5.png"
+    },
+    {
+      "name": "Abhinandan Singh",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/399200/399250.2.png"
+    },
+    {
+      "name": "Nuwan Thushara",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.18,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/381300/381395.7.png"
+    },
+    {
+      "name": "Suyash Sharma",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.29,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/358000/358041.1.png"
+    },
+    {
+      "name": "Yash Dayal",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.56,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/387500/387586.4.png"
+    },
+    {
+      "name": "Rasikh Salam",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 0.67,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/341000/341040.1.png"
+    },
+    {
+      "name": "Bhuvneshwar Kumar",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 1.19,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/392400/392400.2.png"
+    },
+    {
+      "name": "Josh Hazlewood",
+      "role": "Bowler",
+      "team": "rcb",
+      "base_price_cr": null,
+      "sold_price_cr": 1.39,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390900/390976.5.png"
+    }
+  ],
+  "rr": [
+    {
+      "name": "Yudhvir Singh",
+      "role": "All Rounder",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.04,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/314700/314789.jpg"
+    },
+    {
+      "name": "Sam Curran",
+      "role": "All Rounder",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.27,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383153.1.png"
+    },
+    {
+      "name": "Riyan Parag",
+      "role": "All Rounder",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.56,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/370900/370935.1.png"
+    },
+    {
+      "name": "Ravindra Jadeja",
+      "role": "All Rounder",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.56,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316600.2.png"
+    },
+    {
+      "name": "Yashasvi Jaiswal",
+      "role": "All Rounder",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/340300/340309.1.png"
+    },
+    {
+      "name": "Aman Rao",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/lazyimage-noaspect.svg"
+    },
+    {
+      "name": "Ravi Singh",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.11,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/411200/411284.1.png"
+    },
+    {
+      "name": "Lhuan-dre Pretorius",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/394500/394554.2.png"
+    },
+    {
+      "name": "Shubham Dubey",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.09,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398200/398224.5.png"
+    },
+    {
+      "name": "Donovan Ferreira",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.11,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/406000/406033.png"
+    },
+    {
+      "name": "Vaibhav Sooryavanshi",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.12,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/412600/412631.2.png"
+    },
+    {
+      "name": "Shimron Hetmyer",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.22,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/320100/320116.1.png"
+    },
+    {
+      "name": "Dhruv Jurel",
+      "role": "Batsman",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.56,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/340300/340310.1.png"
+    },
+    {
+      "name": "Brijesh Sharma",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Kuldeep Sen",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398620.4.png"
+    },
+    {
+      "name": "Adam Milne",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.27,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316689.1.png"
+    },
+    {
+      "name": "Vignesh Puthur",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Yash Raj Punja",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Sushant Mishra",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.1,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Ravi Bishnoi",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 0.8,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/337100/337188.1.png"
+    },
+    {
+      "name": "Kwena Maphaka",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.17,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/339500/339569.6.png"
+    },
+    {
+      "name": "Nandre Burger",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.39,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/388400/388421.5.png"
+    },
+    {
+      "name": "Sandeep Sharma",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.44,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/323000/323055.1.png"
+    },
+    {
+      "name": "Tushar Deshpande",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 0.72,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/398600/398605.png"
+    },
+    {
+      "name": "Jofra Archer",
+      "role": "Bowler",
+      "team": "rr",
+      "base_price_cr": null,
+      "sold_price_cr": 1.39,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383146.1.png"
+    }
+  ],
+  "srh": [
+    {
+      "name": "Jack Edwards",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": 0.06,
+      "sold_price_cr": 0.33,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/392000/392014.2.png"
+    },
+    {
+      "name": "Krains Fuletra",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/lazyimage-noaspect.svg"
+    },
+    {
+      "name": "Shivang Kumar",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Liam Livingstone",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": 0.22,
+      "sold_price_cr": 1.44,
+      "overseas": true,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/383100/383152.1.png"
+    },
+    {
+      "name": "Harsh Dubey",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/401100/401146.2.png"
+    },
+    {
+      "name": "Kamindu Mendis",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.08,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/329900/329938.1.png"
+    },
+    {
+      "name": "Brydon Carse",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.11,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/325900/325908.1.png"
+    },
+    {
+      "name": "Nitish Kumar Reddy",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.67,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390600/390655.2.png"
+    },
+    {
+      "name": "Harshal Patel",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.89,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/381300/381372.1.png"
+    },
+    {
+      "name": "Abhishek Sharma",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 1.56,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/358000/358037.1.png"
+    },
+    {
+      "name": "Pat Cummins",
+      "role": "All Rounder",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 2.0,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/390900/390954.5.png"
+    },
+    {
+      "name": "Salil Arora",
+      "role": "Batsman",
+      "team": "srh",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.17,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Ravichandran Smaran",
+      "role": "Batsman",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Aniket Verma",
+      "role": "Batsman",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/399200/399246.2.png"
+    },
+    {
+      "name": "Ishan Kishan",
+      "role": "Batsman",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 1.25,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/331100/331165.1.png"
+    },
+    {
+      "name": "Travis Head",
+      "role": "Batsman",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 1.56,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/321500/321584.2.png"
+    },
+    {
+      "name": "Heinrich Klaasen",
+      "role": "Batsman",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 2.56,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322073.1.png"
+    },
+    {
+      "name": "Praful Hinge",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Amit Kumar",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Onkar Tarmale",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://wassets.hscicdn.com/static/images/player-jersey.svg"
+    },
+    {
+      "name": "Sakib Hussain",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": 0.03,
+      "sold_price_cr": 0.03,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/387600/387604.1.png"
+    },
+    {
+      "name": "Shivam Mavi",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": 0.08,
+      "sold_price_cr": 0.08,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/341000/341042.1.png"
+    },
+    {
+      "name": "Zeeshan Ansari",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.04,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/399200/399247.2.png"
+    },
+    {
+      "name": "Jaydev Unadkat",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.11,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/399700/399715.2.png"
+    },
+    {
+      "name": "Eshan Malinga",
+      "role": "Bowler",
+      "team": "srh",
+      "base_price_cr": null,
+      "sold_price_cr": 0.13,
+      "overseas": true,
+      "retained": true,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/399200/399252.2.png"
+    }
+  ]
+}

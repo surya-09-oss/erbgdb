@@ -6,12 +6,11 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.135.1",
-    "psycopg[binary]>=3.3.3",
     "httpx>=0.28.1",
     "beautifulsoup4>=4.14.3",
     "lxml>=6.0.2",
     "jinja2>=3.1.6",
-    "pytz>=2026.1",
+    "pytz>=2024.1",
 ]
 
 [tool.poetry]
@@ -24,12 +23,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = {extras = ["standard"], version = "^0.135.1"}
-psycopg = {extras = ["binary"], version = "^3.3.3"}
 httpx = "^0.28.1"
 beautifulsoup4 = "^4.14.3"
 lxml = "^6.0.2"
 jinja2 = "^3.1.6"
-pytz = "^2026.1.post1"
+pytz = ">=2024.1"
 
 
 [build-system]

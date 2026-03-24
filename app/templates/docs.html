@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL 2026 API - Documentation</title>
+    <title>IPL 2026 Fantasy API - Documentation</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -218,9 +218,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>IPL 2026 API</h1>
-            <p>Free, unlimited, self-hosted JSON API for IPL 2026 data.</p>
-            <span class="badge">v1.0</span>
+            <h1>IPL 2026 Fantasy API</h1>
+            <p>Free, unlimited, self-hosted JSON API for IPL 2026 data with Fantasy Points system.</p>
+            <span class="badge">v2.0</span>
             <div class="stats">
                 <span class="stat"><strong>Auto-refresh:</strong> every 10s</span>
                 <span class="stat"><strong>Auth:</strong> None required</span>
@@ -453,6 +453,441 @@
             </div>
         </div>
 
+        <!-- FANTASY PLAYERS -->
+        <h2>Fantasy Players</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/players</span>
+                <span class="endpoint-desc">All fantasy players</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns all fantasy players grouped by team. Supports optional <code class="inline-code">?team=csk</code> and <code class="inline-code">?role=Batsman</code> query filters.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/players?team=mi</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "team": "mi",
+  "players": [
+    {
+      "name": "Rohit Sharma",
+      "role": "Batsman",
+      "team": "mi",
+      "base_price_cr": 16.3,
+      "sold_price_cr": 16.3,
+      "overseas": false,
+      "retained": true,
+      "image_url": "https://..."
+    }
+  ],
+  "total": 25
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/players/{team_code}</span>
+                <span class="endpoint-desc">Team fantasy players</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns all fantasy players for a specific team with full details including role, price, and image.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">team_code</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Team abbreviation code (mi, csk, rcb, etc.)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/players/csk</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/players/{team_code}/{role}</span>
+                <span class="endpoint-desc">Team players by role</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns players of a specific role from a team.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">team_code</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Team abbreviation code</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">role</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Player role: <code class="inline-code">batsman</code>, <code class="inline-code">bowler</code>, <code class="inline-code">all_rounder</code>, <code class="inline-code">wicket_keeper</code></td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/players/mi/bowler</code></pre>
+            </div>
+        </div>
+
+        <!-- FANTASY POINTS -->
+        <h2>Fantasy Points</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/points/{match_id}</span>
+                <span class="endpoint-desc">Match fantasy points</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Auto-fetches scorecard from Cricbuzz and calculates fantasy points for all players in a match. Use <code class="inline-code">?refresh=true</code> to force re-fetch.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">match_id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Cricbuzz match ID (from schedule endpoint)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/points/149618</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "data": {
+    "match_id": "149618",
+    "players": [
+      {
+        "name": "Virat Kohli",
+        "team": "rcb",
+        "role": "Batsman",
+        "fantasy_points": {
+          "total_points": 85,
+          "batting_points": 75,
+          "bowling_points": 0,
+          "fielding_points": 10,
+          "batting_breakdown": {
+            "runs": 52, "fours_bonus": 6,
+            "sixes_bonus": 4, "half_century_bonus": 8,
+            "strike_rate_bonus": 4
+          }
+        },
+        "batting_stats": {
+          "runs": 52, "balls": 35,
+          "fours": 6, "sixes": 2
+        }
+      }
+    ],
+    "total_players": 22
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/points/{match_id}/{team_code}</span>
+                <span class="endpoint-desc">Team match fantasy points</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Get fantasy points for a specific team's players in a match.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/points/149618/rcb</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/leaderboard</span>
+                <span class="endpoint-desc">Fantasy leaderboard</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Get fantasy points leaderboard for a specific match, sorted by total points.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/leaderboard?match_id=149618</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/scoring-rules</span>
+                <span class="endpoint-desc">Scoring rules</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the complete fantasy scoring rules including batting, bowling, fielding, strike rate, economy rate, and Playing XI bonus.</p>
+                <div class="section-label">Scoring Summary</div>
+                <p><strong>Batting:</strong> +1/run, +4 bonus/four, +7 bonus/six, milestones (+4 at 25, +8 at 50, +12 at 75, +16 at 100), duck -2</p>
+                <p><strong>Strike Rate (min 10 balls):</strong> >170: +6, 150-170: +4, 130-150: +2, 60-70: -2, 50-60: -4, &lt;50: -6</p>
+                <p><strong>Bowling:</strong> +25/wicket, +8 LBW/bowled bonus, +12/maiden, haul bonus (+4 for 3W, +8 for 4W, +16 for 5W)</p>
+                <p><strong>Economy (min 2 overs):</strong> &lt;5: +6, 5-6: +4, 6-7: +2, 9-10: -2, 10-11: -4, >11: -6</p>
+                <p><strong>Fielding:</strong> +8/catch, +4 bonus for 3+ catches, +12/stumping, +12/run out direct, +6/run out assist</p>
+                <p><strong>Extra:</strong> +4 Playing XI bonus, -2 duck penalty</p>
+                <p><strong>Example:</strong> 50 runs with 5 fours = 50 (runs) + 20 (5x4 boundary bonus) + 8 (50-run milestone) + 4 (Playing XI) = 82 points</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/scoring-rules</code></pre>
+            </div>
+        </div>
+
+        <!-- PLAYER MATCH-WISE POINTS -->
+        <h2>Player Match-Wise Points</h2>
+
+        <div class="refresh-note">
+            <strong>How it works:</strong> Each match's points start from <strong>0</strong>. When you process a match via <code class="inline-code">/api/fantasy/points/{match_id}</code>, each player's points are recorded independently. Old match data is always preserved. You can then query any player's full match history, specific match points, or cumulative totals.
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/player/{player_name}/matches</span>
+                <span class="endpoint-desc">Player match history</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns all match-wise fantasy points for a specific player. Each match entry has independent points (starting from 0). Old match data is always preserved.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">player_name</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Player name (e.g., Virat Kohli)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/player/Virat%20Kohli/matches</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "player": "Virat Kohli",
+  "team": "rcb",
+  "role": "Batsman",
+  "matches": [
+    {
+      "player_name": "Virat Kohli",
+      "match_id": "149618",
+      "team": "rcb",
+      "role": "Batsman",
+      "fantasy_points": {
+        "total_points": 85,
+        "batting_points": 75,
+        "bowling_points": 0,
+        "fielding_points": 10
+      },
+      "batting_stats": { "runs": 52, "balls": 35, "fours": 6, "sixes": 2 }
+    },
+    {
+      "player_name": "Virat Kohli",
+      "match_id": "149625",
+      "team": "rcb",
+      "role": "Batsman",
+      "fantasy_points": {
+        "total_points": 42,
+        "batting_points": 42,
+        "bowling_points": 0,
+        "fielding_points": 0
+      },
+      "batting_stats": { "runs": 30, "balls": 22, "fours": 4, "sixes": 1 }
+    }
+  ],
+  "total_matches": 2
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/player/{player_name}/match/{match_id}</span>
+                <span class="endpoint-desc">Player single match points</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns a player's fantasy points for a specific match. Points for each match are independent and always start from 0.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">player_name</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Player name (e.g., Virat Kohli)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">match_id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Cricbuzz match ID</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/player/Virat%20Kohli/match/149618</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "data": {
+    "player_name": "Virat Kohli",
+    "match_id": "149618",
+    "team": "rcb",
+    "role": "Batsman",
+    "fantasy_points": {
+      "total_points": 85,
+      "batting_points": 75,
+      "bowling_points": 0,
+      "fielding_points": 10,
+      "batting_breakdown": {
+        "runs": 52, "fours_bonus": 6,
+        "sixes_bonus": 4, "half_century_bonus": 8,
+        "strike_rate_bonus": 4
+      }
+    },
+    "batting_stats": {
+      "runs": 52, "balls": 35,
+      "fours": 6, "sixes": 2,
+      "strike_rate": 148.57, "is_out": true
+    }
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/player/{player_name}/total</span>
+                <span class="endpoint-desc">Player cumulative total</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the cumulative total fantasy points for a player across all processed matches, with a per-match breakdown.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">player_name</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Player name (e.g., Virat Kohli)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/player/Virat%20Kohli/total</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "data": {
+    "player_name": "Virat Kohli",
+    "team": "rcb",
+    "role": "Batsman",
+    "total_matches": 2,
+    "cumulative_total_points": 127,
+    "cumulative_batting_points": 117,
+    "cumulative_bowling_points": 0,
+    "cumulative_fielding_points": 10,
+    "matches": [
+      { "match_id": "149618", "points": 85, "batting_points": 75, "bowling_points": 0, "fielding_points": 10 },
+      { "match_id": "149625", "points": 42, "batting_points": 42, "bowling_points": 0, "fielding_points": 0 }
+    ]
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/team/{team_code}/match-history</span>
+                <span class="endpoint-desc">Team match history</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns match-wise fantasy points for all players belonging to a team, grouped by player with per-match data.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">team_code</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Team abbreviation code (mi, csk, rcb, etc.)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/team/rcb/match-history</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "team": "rcb",
+  "players": [
+    {
+      "player_name": "Virat Kohli",
+      "role": "Batsman",
+      "matches": [
+        {
+          "match_id": "149618",
+          "fantasy_points": { "total_points": 85, "batting_points": 75, "bowling_points": 0, "fielding_points": 10 }
+        },
+        {
+          "match_id": "149625",
+          "fantasy_points": { "total_points": 42, "batting_points": 42, "bowling_points": 0, "fielding_points": 0 }
+        }
+      ],
+      "total_matches": 2
+    }
+  ],
+  "total_players": 1
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- ADMIN -->
+        <h2>Admin API</h2>
+        <div class="refresh-note">
+            <strong>Authentication required:</strong> All admin endpoints require an <code class="inline-code">Authorization: Bearer &lt;token&gt;</code> header. Set the <code class="inline-code">ADMIN_TOKEN</code> environment variable or check server logs for the auto-generated token. <a href="/admin">Open Admin Panel</a>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method" style="background:#0a7;">POST</span>
+                <span class="path">/api/admin/players/add</span>
+                <span class="endpoint-desc">Add a player</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Add a new player to a team's fantasy roster.</p>
+                <div class="section-label">Request Body (JSON)</div>
+                <pre><code>{
+  "name": "New Player",
+  "role": "Batsman",
+  "team": "mi",
+  "base_price_cr": 1.0,
+  "sold_price_cr": 2.5,
+  "overseas": false,
+  "image_url": "https://..."
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method" style="background:#c00;">POST</span>
+                <span class="path">/api/admin/players/remove</span>
+                <span class="endpoint-desc">Remove a player</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Remove a player from a team's fantasy roster.</p>
+                <div class="section-label">Request Body (JSON)</div>
+                <pre><code>{
+  "name": "Player Name",
+  "team": "mi"
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method" style="background:#0a7;">POST</span>
+                <span class="path">/api/admin/cache/clear</span>
+                <span class="endpoint-desc">Clear cache</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Clear all caches. Optionally pass <code class="inline-code">?match_id=149618</code> to clear only a specific match.</p>
+            </div>
+        </div>
+
         <!-- UTILITY -->
         <h2>Utility</h2>
 
@@ -470,6 +905,7 @@
 
         <footer>
             <p>Data scraped live from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a> with automatic retry and 10-second TTL caching.</p>
+            <p style="margin-top: 8px;">Fantasy points auto-calculated per match. <a href="/admin">Admin Panel</a></p>
             <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited.</p>
         </footer>
     </div>
