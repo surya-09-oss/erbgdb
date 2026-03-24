@@ -37,7 +37,7 @@ jinja_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=
 
 @asynccontextmanager
 async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
-    logger.info("Admin token: %s", ADMIN_TOKEN)
+    logger.info("Admin token configured (length=%d)", len(ADMIN_TOKEN))
     yield
     await cache.clear()
 

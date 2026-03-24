@@ -22,9 +22,17 @@ def _load() -> None:
 
 
 def _save() -> None:
-    """Persist current in-memory player data back to JSON."""
-    with open(_PLAYERS_FILE, "w") as f:
-        json.dump(_players, f, indent=2)
+    """Persist current in-memory player data back to JSON.
+
+    On read-only filesystems (e.g. Vercel) this silently skips the write
+    so that admin add/remove still works in-memory for the lifetime of
+    the serverless invocation.
+    """
+    try:
+        with open(_PLAYERS_FILE, "w") as f:
+            json.dump(_players, f, indent=2)
+    except OSError:
+        pass
 
 
 def get_all_players() -> dict[str, list[dict]]:
@@ -72,7 +80,6 @@ def add_player(player: dict) -> bool:
         team_code = player.get("team", "").lower()
         if team_code not in _players:
             _players[team_code] = []
-        # Check for duplicate
         for existing in _players[team_code]:
             if existing["name"].lower() == player["name"].lower():
                 return False
