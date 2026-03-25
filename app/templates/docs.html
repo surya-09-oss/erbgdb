@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL 2026 Fantasy API - Documentation</title>
+    <title>Cricket Fantasy API - Documentation</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -218,9 +218,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>IPL 2026 Fantasy API</h1>
-            <p>Free, unlimited, self-hosted JSON API for IPL 2026 data with Fantasy Points system.</p>
-            <span class="badge">v2.0</span>
+            <h1>Cricket Fantasy API</h1>
+            <p>Free, unlimited, self-hosted JSON API for IPL 2026 &amp; International cricket data with Fantasy Points system.</p>
+            <span class="badge">v3.0</span>
             <div class="stats">
                 <span class="stat"><strong>Auto-refresh:</strong> every 10s</span>
                 <span class="stat"><strong>Auth:</strong> None required</span>
@@ -230,7 +230,7 @@
         </header>
 
         <div class="refresh-note">
-            <strong>Auto-updating cache:</strong> All data is cached and automatically refreshed every <strong>10 seconds</strong> from source APIs. You always get fresh data with zero delay.
+            <strong>Auto-updating cache:</strong> All data is cached and automatically refreshed every <strong>10 seconds</strong> from source APIs. Fantasy points are <strong>auto-updated every 30 seconds</strong> for all tracked matches (IPL + International).
         </div>
 
         <!-- IPL 2026 -->
@@ -453,8 +453,128 @@
             </div>
         </div>
 
+        <!-- INTERNATIONAL CRICKET -->
+        <h2>International Cricket (SA vs NZ)</h2>
+
+        <div class="refresh-note">
+            <strong>International Matches:</strong> Separate routes for international cricket matches. Currently tracking <strong>South Africa vs New Zealand</strong> (Match ID: 122731). Fantasy points are auto-calculated using the same scoring rules as IPL.
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/international/live-scores</span>
+                <span class="endpoint-desc">International live scores</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns live scores for all registered international matches (e.g. SA vs NZ). Auto-updated every 10 seconds.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/international/live-scores</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": false,
+  "cache_ttl_seconds": 10,
+  "data": {
+    "series": "International Matches",
+    "matches": [
+      {
+        "match_id": "122731",
+        "title": "South Africa vs New Zealand",
+        "series": "South Africa vs New Zealand 2026",
+        "status": "In Progress",
+        "status_type": "in_progress",
+        "live_score": "245/4 (42.3)",
+        "teams": [
+          { "name": "South Africa", "short_name": "SA", "code": "sa" },
+          { "name": "New Zealand", "short_name": "NZ", "code": "nz" }
+        ]
+      }
+    ],
+    "total": 1
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/international/matches</span>
+                <span class="endpoint-desc">List international matches</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns all registered international matches with their details.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/international/matches</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "matches": [
+    {
+      "match_id": "122731",
+      "title": "South Africa vs New Zealand",
+      "short_title": "SA vs NZ",
+      "team1": { "name": "South Africa", "short_name": "SA", "code": "sa" },
+      "team2": { "name": "New Zealand", "short_name": "NZ", "code": "nz" },
+      "series": "South Africa vs New Zealand 2026",
+      "match_type": "International"
+    }
+  ],
+  "total": 1
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/international/match/{match_id}</span>
+                <span class="endpoint-desc">International match detail</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns detailed live score for a specific international match including batters and bowlers at the crease.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">match_id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Match ID (e.g., 122731 for SA vs NZ)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/international/match/122731</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/international/teams</span>
+                <span class="endpoint-desc">International team codes</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns all international team codes and names.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/international/teams</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "count": 2,
+  "teams": {
+    "sa": "South Africa",
+    "nz": "New Zealand"
+  }
+}</code></pre>
+            </div>
+        </div>
+
         <!-- FANTASY PLAYERS -->
         <h2>Fantasy Players</h2>
+
+        <div class="refresh-note">
+            <strong>Note:</strong> Fantasy player endpoints support both IPL teams (csk, mi, rcb, etc.) and international teams (sa, nz). Use the same team codes across all endpoints.
+        </div>
 
         <div class="endpoint">
             <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
@@ -834,6 +954,106 @@
             </div>
         </div>
 
+        <!-- FANTASY SCORECARD -->
+        <h2>Fantasy Scorecard</h2>
+
+        <div class="refresh-note">
+            <strong>Separate from live scores:</strong> The fantasy scorecard endpoint returns raw innings data (batting, bowling, fielding) combined with calculated fantasy points. This is different from the live scores endpoints which only show current match state.
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/scorecard/{match_id}</span>
+                <span class="endpoint-desc">Full fantasy scorecard</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the detailed fantasy scorecard for a match — raw innings data plus calculated fantasy points. Works for both IPL and International matches.</p>
+                <table class="param-table">
+                    <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                    <tr>
+                        <td><span class="param-name">match_id</span> <span class="param-required">required</span></td>
+                        <td>string</td>
+                        <td>Cricbuzz match ID (e.g., 149618 for IPL, 122731 for SA vs NZ)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">refresh</span></td>
+                        <td>boolean</td>
+                        <td>Force refresh from Cricbuzz (default: false)</td>
+                    </tr>
+                </table>
+                <div class="section-label">Example Requests</div>
+                <pre><code># IPL match scorecard
+curl {{ base_url }}/api/fantasy/scorecard/149618
+
+# SA vs NZ match scorecard
+curl {{ base_url }}/api/fantasy/scorecard/122731
+
+# Force refresh
+curl {{ base_url }}/api/fantasy/scorecard/122731?refresh=true</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "cached": false,
+  "data": {
+    "match_id": "122731",
+    "scorecard": {
+      "innings": [
+        {
+          "batting": [...],
+          "bowling": [...],
+          "extras": {...}
+        }
+      ],
+      "fielding": {...}
+    },
+    "fantasy_points": [
+      {
+        "name": "Aiden Markram",
+        "team": "sa",
+        "total_points": 85,
+        "batting_points": 65,
+        "bowling_points": 0,
+        "fielding_points": 20
+      }
+    ],
+    "total_players": 22
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- AUTO-UPDATE STATUS -->
+        <h2>Auto-Update Status</h2>
+
+        <div class="refresh-note">
+            <strong>Background auto-update:</strong> Fantasy points are automatically refreshed every <strong>30 seconds</strong> for all tracked matches. This runs as a background task — no action needed from your side. Use this endpoint to check the status.
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="method">GET</span>
+                <span class="path">/api/fantasy/auto-update-status</span>
+                <span class="endpoint-desc">Auto-update task status</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns the status of the background auto-update task that keeps fantasy points fresh for all tracked matches.</p>
+                <div class="section-label">Example Request</div>
+                <pre><code>curl {{ base_url }}/api/fantasy/auto-update-status</code></pre>
+                <div class="section-label">Sample Response</div>
+                <pre><code>{
+  "status": "success",
+  "auto_update": {
+    "enabled": true,
+    "interval_seconds": 30,
+    "tracked_matches": ["149618", "122731"],
+    "total_tracked": 2,
+    "task_running": true
+  }
+}</code></pre>
+            </div>
+        </div>
+
         <!-- ADMIN -->
         <h2>Admin API</h2>
         <div class="refresh-note">
@@ -905,8 +1125,8 @@
 
         <footer>
             <p>Data scraped live from <a href="https://www.cricbuzz.com" target="_blank">Cricbuzz</a> with automatic retry and 10-second TTL caching.</p>
-            <p style="margin-top: 8px;">Fantasy points auto-calculated per match. <a href="/admin">Admin Panel</a></p>
-            <p style="margin-top: 8px;">This is an unofficial API for educational purposes. Self-hosted &bull; Free &bull; Unlimited.</p>
+            <p style="margin-top: 8px;">Fantasy points auto-calculated per match &bull; Auto-updated every 30s &bull; IPL + International support &bull; <a href="/admin">Admin Panel</a></p>
+            <p style="margin-top: 8px;">Cricket Fantasy API v3.0 &bull; Self-hosted &bull; Free &bull; Unlimited.</p>
         </footer>
     </div>
 </body>

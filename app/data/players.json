@@ -2428,5 +2428,329 @@
       "retained": true,
       "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/399200/399252.2.png"
     }
+  ],
+  "sa": [
+    {
+      "name": "Aiden Markram",
+      "role": "Batsman",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322800/322877.1.png"
+    },
+    {
+      "name": "Temba Bavuma",
+      "role": "Batsman",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316700/316706.1.png"
+    },
+    {
+      "name": "Tony de Zorzi",
+      "role": "Batsman",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/374100/374165.1.png"
+    },
+    {
+      "name": "Rassie van der Dussen",
+      "role": "Batsman",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316643.1.png"
+    },
+    {
+      "name": "David Miller",
+      "role": "Batsman",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316655.1.png"
+    },
+    {
+      "name": "Heinrich Klaasen",
+      "role": "Wicket Keeper",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322014.1.png"
+    },
+    {
+      "name": "Kyle Verreynne",
+      "role": "Wicket Keeper",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322026.1.png"
+    },
+    {
+      "name": "Tristan Stubbs",
+      "role": "Batsman",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/348500/348577.1.png"
+    },
+    {
+      "name": "Marco Jansen",
+      "role": "All Rounder",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322700/322719.1.png"
+    },
+    {
+      "name": "Wiaan Mulder",
+      "role": "All Rounder",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322020.1.png"
+    },
+    {
+      "name": "Kagiso Rabada",
+      "role": "Bowler",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316700/316704.1.png"
+    },
+    {
+      "name": "Anrich Nortje",
+      "role": "Bowler",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322024.1.png"
+    },
+    {
+      "name": "Lungi Ngidi",
+      "role": "Bowler",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322069.1.png"
+    },
+    {
+      "name": "Keshav Maharaj",
+      "role": "Bowler",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316700/316703.1.png"
+    },
+    {
+      "name": "Tabraiz Shamsi",
+      "role": "Bowler",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322025.1.png"
+    },
+    {
+      "name": "Gerald Coetzee",
+      "role": "Bowler",
+      "team": "sa",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/374100/374111.1.png"
+    }
+  ],
+  "nz": [
+    {
+      "name": "Kane Williamson",
+      "role": "Batsman",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316612.1.png"
+    },
+    {
+      "name": "Devon Conway",
+      "role": "Batsman",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/322000/322028.1.png"
+    },
+    {
+      "name": "Rachin Ravindra",
+      "role": "All Rounder",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/374100/374182.1.png"
+    },
+    {
+      "name": "Daryl Mitchell",
+      "role": "All Rounder",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316639.1.png"
+    },
+    {
+      "name": "Glenn Phillips",
+      "role": "Batsman",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316640.1.png"
+    },
+    {
+      "name": "Tom Latham",
+      "role": "Wicket Keeper",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316626.1.png"
+    },
+    {
+      "name": "Tom Blundell",
+      "role": "Wicket Keeper",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316627.1.png"
+    },
+    {
+      "name": "Mitchell Santner",
+      "role": "All Rounder",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316629.1.png"
+    },
+    {
+      "name": "Michael Bracewell",
+      "role": "All Rounder",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/340100/340187.1.png"
+    },
+    {
+      "name": "Tim Southee",
+      "role": "Bowler",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316613.1.png"
+    },
+    {
+      "name": "Trent Boult",
+      "role": "Bowler",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316614.1.png"
+    },
+    {
+      "name": "Matt Henry",
+      "role": "Bowler",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316641.1.png"
+    },
+    {
+      "name": "Lockie Ferguson",
+      "role": "Bowler",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316642.1.png"
+    },
+    {
+      "name": "Ish Sodhi",
+      "role": "Bowler",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316628.1.png"
+    },
+    {
+      "name": "Kyle Jamieson",
+      "role": "Bowler",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/321200/321236.1.png"
+    },
+    {
+      "name": "Mark Chapman",
+      "role": "Batsman",
+      "team": "nz",
+      "base_price_cr": null,
+      "sold_price_cr": null,
+      "overseas": false,
+      "retained": false,
+      "image_url": "https://img1.hscicdn.com/image/upload/f_auto,t_h_100/lsci/db/PICTURES/CMS/316600/316637.1.png"
+    }
   ]
 }

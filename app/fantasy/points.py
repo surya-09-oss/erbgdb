@@ -37,19 +37,19 @@ def calculate_batting_points(
         breakdown["sixes_bonus"] = sixes * 7
         points += sixes * 7
 
-    # Milestone bonuses (only highest applicable)
+    # Milestone bonuses (cumulative — each threshold adds its own bonus)
+    if runs >= 25:
+        breakdown["25_runs_bonus"] = 4
+        points += 4
+    if runs >= 50:
+        breakdown["half_century_bonus"] = 8
+        points += 8
+    if runs >= 75:
+        breakdown["75_runs_bonus"] = 12
+        points += 12
     if runs >= 100:
         breakdown["century_bonus"] = 16
         points += 16
-    elif runs >= 75:
-        breakdown["75_runs_bonus"] = 12
-        points += 12
-    elif runs >= 50:
-        breakdown["half_century_bonus"] = 8
-        points += 8
-    elif runs >= 25:
-        breakdown["25_runs_bonus"] = 4
-        points += 4
 
     # Duck -2 (for batters, WK, all-rounders)
     if runs == 0 and is_out and is_batter_or_wk_or_allrounder:
@@ -62,16 +62,16 @@ def calculate_batting_points(
         if sr > 170:
             breakdown["strike_rate_bonus"] = 6
             points += 6
-        elif sr >= 150:
+        elif sr >= 150.01:
             breakdown["strike_rate_bonus"] = 4
             points += 4
-        elif sr >= 130:
+        elif sr >= 130.01:
             breakdown["strike_rate_bonus"] = 2
             points += 2
-        elif sr >= 60 and sr < 70:
+        elif 60 <= sr < 70:
             breakdown["strike_rate_penalty"] = -2
             points -= 2
-        elif sr >= 50 and sr < 60:
+        elif 50 <= sr < 60:
             breakdown["strike_rate_penalty"] = -4
             points -= 4
         elif sr < 50:
@@ -124,16 +124,16 @@ def calculate_bowling_points(
         if economy < 5:
             breakdown["economy_bonus"] = 6
             points += 6
-        elif economy <= 6:
+        elif economy >= 5 and economy <= 5.99:
             breakdown["economy_bonus"] = 4
             points += 4
-        elif economy <= 7:
+        elif economy >= 6 and economy <= 7:
             breakdown["economy_bonus"] = 2
             points += 2
-        elif economy >= 9 and economy <= 10:
+        elif 9 <= economy <= 10:
             breakdown["economy_penalty"] = -2
             points -= 2
-        elif economy > 10 and economy <= 11:
+        elif 10 < economy <= 11:
             breakdown["economy_penalty"] = -4
             points -= 4
         elif economy > 11:

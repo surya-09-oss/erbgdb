@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -18,6 +19,13 @@ from app.scrapers.ipl_api import (
     fetch_ipl_squad,
     fetch_ipl_winners,
 )
+from app.scrapers.international_api import (
+    INTERNATIONAL_MATCHES,
+    INTERNATIONAL_TEAM_CODES,
+    fetch_international_live_scores,
+    fetch_international_match_score,
+    get_international_matches,
+)
 from app.data import (
     add_player,
     get_all_players,
@@ -28,6 +36,7 @@ from app.data import (
 )
 from app.fantasy.admin import ADMIN_TOKEN, verify_admin_token
 from app.fantasy.match_processor import clear_match_cache, process_match
+from app.fantasy.scorecard import fetch_full_scorecard
 from app.fantasy.player_history import (
     get_player_all_matches,
     get_player_match_points,
@@ -40,18 +49,58 @@ logger = logging.getLogger(__name__)
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 jinja_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=True)
 
+# ---------------------------------------------------------------------------
+# All tracked match IDs for auto-update (IPL + International)
+# ---------------------------------------------------------------------------
+AUTO_UPDATE_MATCH_IDS: list[str] = [
+    "149618",
+    "122731",
+]
+
+_auto_update_task: Optional[asyncio.Task] = None  # type: ignore[type-arg]
+
+
+async def _auto_update_fantasy_points() -> None:
+    """Background task that refreshes fantasy points for all tracked matches every 30s."""
+    while True:
+        try:
+            all_match_ids = list(set(
+                AUTO_UPDATE_MATCH_IDS + list(INTERNATIONAL_MATCHES.keys())
+            ))
+            for match_id in all_match_ids:
+                try:
+                    await process_match(match_id, force_refresh=True)
+                    logger.info("Auto-updated fantasy points for match %s", match_id)
+                except Exception:
+                    logger.exception("Auto-update failed for match %s", match_id)
+            await asyncio.sleep(30)
+        except asyncio.CancelledError:
+            break
+        except Exception:
+            logger.exception("Auto-update loop error")
+            await asyncio.sleep(30)
+
 
 @asynccontextmanager
 async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
+    global _auto_update_task
     logger.info("Admin token configured (length=%d)", len(ADMIN_TOKEN))
+    _auto_update_task = asyncio.create_task(_auto_update_fantasy_points())
+    logger.info("Fantasy points auto-update task started (every 30s)")
     yield
+    if _auto_update_task:
+        _auto_update_task.cancel()
+        try:
+            await _auto_update_task
+        except asyncio.CancelledError:
+            pass
     await cache.clear()
 
 
 app = FastAPI(
-    title="IPL 2026 Fantasy API",
-    description="Free, unlimited, self-hosted JSON API for IPL 2026 data with Fantasy Points system.",
-    version="2.0.0",
+    title="Cricket Fantasy API",
+    description="Free, unlimited, self-hosted JSON API for IPL 2026 & International cricket data with Fantasy Points system.",
+    version="3.0.0",
     lifespan=lifespan,
 )
 
@@ -150,11 +199,12 @@ async def _cached_response(
     }
 
 
-# ---------------------------------------------------------------------------
-# IPL 2026 endpoints (existing)
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# IPL 2026 endpoints
+# ===========================================================================
 @app.get("/api/ipl/live-scores")
 async def ipl_live_scores() -> dict:
+    """Get live scores for IPL 2026 matches only."""
     return await _cached_response("ipl_live_scores", fetch_ipl_live_scores)
 
 
@@ -190,9 +240,50 @@ async def ipl_teams() -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Fantasy Players endpoints
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# International Cricket endpoints (SA vs NZ, etc.)
+# ===========================================================================
+@app.get("/api/international/live-scores")
+async def international_live_scores() -> dict:
+    """Get live scores for registered international matches (e.g. SA vs NZ)."""
+    return await _cached_response(
+        "international_live_scores", fetch_international_live_scores
+    )
+
+
+@app.get("/api/international/matches")
+async def international_matches_list() -> dict:
+    """List all registered international matches."""
+    matches = get_international_matches()
+    return {
+        "status": "success",
+        "matches": matches,
+        "total": len(matches),
+    }
+
+
+@app.get("/api/international/match/{match_id}")
+async def international_match_detail(match_id: str) -> dict:
+    """Get detailed live score for a specific international match."""
+    return await _cached_response(
+        f"intl_match_{match_id}",
+        lambda: fetch_international_match_score(match_id),
+    )
+
+
+@app.get("/api/international/teams")
+async def international_teams() -> dict:
+    """Get all international team codes."""
+    return {
+        "status": "success",
+        "count": len(INTERNATIONAL_TEAM_CODES),
+        "teams": INTERNATIONAL_TEAM_CODES,
+    }
+
+
+# ===========================================================================
+# Fantasy Players endpoints (works for both IPL and International teams)
+# ===========================================================================
 @app.get("/api/fantasy/players")
 async def fantasy_all_players(
     team: Optional[str] = Query(None, description="Filter by team code"),
@@ -229,18 +320,19 @@ async def fantasy_all_players(
 
 @app.get("/api/fantasy/players/{team_code}")
 async def fantasy_team_players(team_code: str) -> dict:
-    """Get all fantasy players for a specific team."""
+    """Get all fantasy players for a specific team (IPL or international)."""
     players = get_team_players(team_code)
+    all_codes = {**TEAM_CODES, **INTERNATIONAL_TEAM_CODES}
     if not players:
         return {
             "status": "error",
             "error": f"No players found for team '{team_code}' or invalid team code",
-            "valid_codes": list(TEAM_CODES.keys()),
+            "valid_codes": list(all_codes.keys()),
         }
     return {
         "status": "success",
         "team": team_code.lower(),
-        "team_name": TEAM_CODES.get(team_code.lower(), team_code),
+        "team_name": all_codes.get(team_code.lower(), team_code),
         "players": players,
         "total": len(players),
     }
@@ -275,16 +367,17 @@ async def fantasy_team_role_players(team_code: str, player_role: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Fantasy Points endpoints
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# Fantasy Points endpoints (works for both IPL and International matches)
+# ===========================================================================
 @app.get("/api/fantasy/points/{match_id}")
 async def fantasy_match_points(
     match_id: str,
     refresh: bool = Query(False, description="Force refresh from Cricbuzz"),
 ) -> dict:
-    """Get fantasy points for all players in a specific match.
+    """Get fantasy points for all players in a match (IPL or International).
     Points are auto-calculated from live Cricbuzz scorecard data.
+    Auto-updates every 30 seconds for tracked matches.
     """
     result = await process_match(match_id, force_refresh=refresh)
     return {
@@ -329,6 +422,10 @@ async def fantasy_leaderboard(
             "status": "success",
             "message": "Provide a match_id query parameter to get the leaderboard for a specific match.",
             "example": "/api/fantasy/leaderboard?match_id=149618",
+            "available_matches": {
+                "ipl_example": "149618",
+                "international": list(INTERNATIONAL_MATCHES.keys()),
+            },
         }
 
     result = await process_match(match_id)
@@ -356,9 +453,9 @@ async def fantasy_scoring_rules() -> dict:
                 "six": "+7 bonus per six (total +8 per six: 1 run + 7 bonus)",
                 "milestones": {
                     "25_runs": "+4 bonus",
-                    "50_runs": "+8 bonus",
-                    "75_runs": "+12 bonus",
-                    "100_runs": "+16 bonus",
+                    "50_runs": "+8 bonus (cumulative with 25-run bonus)",
+                    "75_runs": "+12 bonus (cumulative with 25 & 50 bonuses)",
+                    "100_runs": "+16 bonus (cumulative with all lower milestones)",
                 },
                 "duck": "-2 points (batters/WK/all-rounders only)",
                 "strike_rate": {
@@ -400,13 +497,63 @@ async def fantasy_scoring_rules() -> dict:
                 "playing_xi": "+4 points for being in Playing XI",
                 "duck": "-2 points",
             },
+            "applies_to": "Both IPL and International matches use the same scoring rules",
         },
     }
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# Fantasy Scorecard endpoint (raw scorecard + points, separate from live scores)
+# ===========================================================================
+@app.get("/api/fantasy/scorecard/{match_id}")
+async def fantasy_scorecard(
+    match_id: str,
+    refresh: bool = Query(False, description="Force refresh from Cricbuzz"),
+) -> dict:
+    """Get the detailed fantasy scorecard for a match.
+    Returns raw innings data (batting, bowling, fielding) plus calculated fantasy points.
+    Works for both IPL and International matches.
+    """
+    cache_key = f"fantasy_scorecard_{match_id}"
+    if not refresh:
+        cached = await cache.get(cache_key)
+        if cached is not None:
+            return {
+                "status": "success",
+                "cached": True,
+                "data": cached,
+            }
+
+    scorecard = await fetch_full_scorecard(match_id)
+    points_result = await process_match(match_id, force_refresh=refresh)
+
+    result = {
+        "match_id": match_id,
+        "scorecard": {
+            "innings": scorecard.get("innings", []),
+            "fielding": scorecard.get("fielding", {}),
+        },
+        "fantasy_points": points_result.get("players", []) if "error" not in points_result else [],
+        "total_players": points_result.get("total_players", 0) if "error" not in points_result else 0,
+    }
+
+    sc_err = scorecard.get("error")
+    pt_err = points_result.get("error")
+    if sc_err or pt_err:
+        result["error"] = sc_err or pt_err
+    else:
+        await cache.set(cache_key, result)
+
+    return {
+        "status": "success" if "error" not in result else "error",
+        "cached": False,
+        "data": result,
+    }
+
+
+# ===========================================================================
 # Player Match-Wise Points endpoints
-# ---------------------------------------------------------------------------
+# ===========================================================================
 @app.get("/api/fantasy/player/{player_name}/matches")
 async def fantasy_player_match_history(player_name: str) -> dict:
     """Get all match-wise fantasy points for a specific player.
@@ -518,9 +665,30 @@ async def fantasy_team_match_history(team_code: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# Auto-Update Status endpoint
+# ===========================================================================
+@app.get("/api/fantasy/auto-update-status")
+async def fantasy_auto_update_status() -> dict:
+    """Check the status of the auto-update background task."""
+    all_tracked = list(set(
+        AUTO_UPDATE_MATCH_IDS + list(INTERNATIONAL_MATCHES.keys())
+    ))
+    return {
+        "status": "success",
+        "auto_update": {
+            "enabled": True,
+            "interval_seconds": 30,
+            "tracked_matches": all_tracked,
+            "total_tracked": len(all_tracked),
+            "task_running": _auto_update_task is not None and not _auto_update_task.done(),
+        },
+    }
+
+
+# ===========================================================================
 # Admin API endpoints (requires ADMIN_TOKEN)
-# ---------------------------------------------------------------------------
+# ===========================================================================
 def _check_admin(authorization: Optional[str]) -> None:
     """Verify admin authorization header."""
     if not authorization:
