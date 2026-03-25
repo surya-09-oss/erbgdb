@@ -1,13 +1,18 @@
 """Cricbuzz scorecard scraper — fetches detailed batting/bowling/fielding stats
-for a specific match so fantasy points can be calculated per player."""
+for a specific match so fantasy points can be calculated per player.
 
+Supports both the legacy HTML scorecard format and the modern Next.js RSC
+JSON payload that Cricbuzz now serves.
+"""
+
+import json
 import logging
 import re
 
 import httpx
 from bs4 import BeautifulSoup, Tag
 
-from app.scrapers.cricbuzz import _fetch_cricbuzz_page, _get_headers, BASE_URL
+from app.scrapers.cricbuzz import _fetch_cricbuzz_page
 
 logger = logging.getLogger(__name__)
 
@@ -20,32 +25,177 @@ async def fetch_full_scorecard(match_id: str) -> dict:
       - innings: list of innings, each with batting and bowling entries
       - fielding: aggregated fielding actions (catches, stumpings, run outs)
     """
+    # Try the regular scorecard page first (has RSC JSON data)
     try:
         html = await _fetch_cricbuzz_page(
-            f"/api/html/cricket-scorecard/{match_id}"
+            f"/live-cricket-scorecard/{match_id}"
         )
     except httpx.HTTPError:
-        # Try the regular scorecard page
+        # Fallback to API HTML endpoint
         try:
             html = await _fetch_cricbuzz_page(
-                f"/live-cricket-scorecard/{match_id}"
+                f"/api/html/cricket-scorecard/{match_id}"
             )
         except httpx.HTTPError:
             return {"match_id": match_id, "error": "Failed to fetch scorecard", "innings": []}
 
+    # Try RSC JSON parsing first (modern Cricbuzz)
+    result = _parse_rsc_scorecard(match_id, html)
+    if result and result.get("innings"):
+        return result
+
+    # Fallback to legacy HTML parsing
     return _parse_scorecard_html(match_id, html)
 
 
+# ---------------------------------------------------------------------------
+# Modern RSC JSON parser
+# ---------------------------------------------------------------------------
+def _parse_rsc_scorecard(match_id: str, html: str) -> dict:
+    """Parse scorecard data from Cricbuzz Next.js RSC JSON payload."""
+    soup = BeautifulSoup(html, "lxml")
+    scripts = soup.find_all("script")
+    innings_list: list[dict] = []
+    fielding_map: dict[str, dict] = {}
+
+    scorecard_data = None
+
+    for script in scripts:
+        if not script.string or "scoreCard" not in script.string:
+            continue
+        if "batTeamDetails" not in script.string:
+            continue
+
+        rsc_chunks = re.findall(
+            r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', script.string, re.DOTALL
+        )
+        for raw in rsc_chunks:
+            if "scoreCard" not in raw:
+                continue
+            unescaped = raw.replace('\\"', '"').replace("\\\\", "\\").replace("\\n", "\n")
+            idx = unescaped.find('"scoreCard"')
+            if idx < 0:
+                continue
+            start = unescaped.rfind("{", max(0, idx - 5000), idx)
+            if start < 0:
+                continue
+            bracket_count = 0
+            end_pos = start
+            for j in range(start, min(len(unescaped), start + 500000)):
+                c = unescaped[j]
+                if c == "{":
+                    bracket_count += 1
+                elif c == "}":
+                    bracket_count -= 1
+                    if bracket_count == 0:
+                        end_pos = j + 1
+                        break
+            try:
+                data = json.loads(unescaped[start:end_pos])
+                api_data = data.get("scorecardApiData", data)
+                if "scoreCard" in api_data:
+                    scorecard_data = api_data
+                    break
+            except json.JSONDecodeError:
+                continue
+        if scorecard_data:
+            break
+
+    if not scorecard_data:
+        return {"match_id": match_id, "innings": [], "fielding": {}}
+
+    score_cards = scorecard_data.get("scoreCard", [])
+
+    for sc_idx, innings in enumerate(score_cards):
+        bat_team = innings.get("batTeamDetails", {})
+        bowl_team = innings.get("bowlTeamDetails", {})
+        batsmen_data = bat_team.get("batsmenData", {})
+        bowlers_data = bowl_team.get("bowlersData", {})
+
+        batting: list[dict] = []
+        bowling: list[dict] = []
+
+        # Parse batsmen
+        for _key, batter in batsmen_data.items():
+            name = batter.get("batName", "")
+            if not name:
+                continue
+
+            runs = int(batter.get("runs", 0))
+            balls = int(batter.get("balls", 0))
+            fours = int(batter.get("fours", 0))
+            sixes = int(batter.get("sixes", 0))
+            out_desc = batter.get("outDesc", "")
+            wicket_code = batter.get("wicketCode", "")
+
+            is_out = wicket_code != "" and wicket_code.upper() not in (
+                "NOT_OUT", "NOT OUT", "RETIRED", "RETIRED_HURT",
+            )
+
+            dismissal = out_desc.lower() if out_desc else ""
+
+            batting.append({
+                "name": name,
+                "runs": runs,
+                "balls": balls,
+                "fours": fours,
+                "sixes": sixes,
+                "is_out": is_out,
+                "dismissal": dismissal,
+                "wicket_code": wicket_code,
+                "strike_rate": round((runs / balls) * 100, 2) if balls > 0 else 0.0,
+            })
+
+            # Extract fielding from dismissal text
+            _extract_fielding_from_dismissal(dismissal, fielding_map)
+
+        # Parse bowlers
+        for _key, bowler in bowlers_data.items():
+            name = bowler.get("bowlName", "")
+            if not name:
+                continue
+
+            overs = bowler.get("overs", 0)
+            maidens = int(bowler.get("maidens", 0))
+            runs_conceded = int(bowler.get("runs", 0))
+            wickets = int(bowler.get("wickets", 0))
+            economy = bowler.get("economy", 0)
+
+            bowling.append({
+                "name": name,
+                "overs": overs,
+                "maidens": maidens,
+                "runs_conceded": runs_conceded,
+                "wickets": wickets,
+                "economy": float(economy) if economy else 0.0,
+            })
+
+        if batting or bowling:
+            innings_list.append({
+                "innings_number": sc_idx + 1,
+                "batting": batting,
+                "bowling": bowling,
+            })
+
+    return {
+        "match_id": match_id,
+        "innings": innings_list,
+        "fielding": fielding_map,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Legacy HTML parser (fallback)
+# ---------------------------------------------------------------------------
 def _parse_scorecard_html(match_id: str, html: str) -> dict:
-    """Parse Cricbuzz scorecard HTML into structured data."""
+    """Parse Cricbuzz scorecard HTML into structured data (legacy format)."""
     soup = BeautifulSoup(html, "lxml")
     innings_list: list[dict] = []
-    fielding_map: dict[str, dict] = {}  # player_name -> {catches, stumpings, run_out_direct, run_out_assist}
+    fielding_map: dict[str, dict] = {}
 
     # Find all innings sections
     innings_divs = soup.find_all("div", id=re.compile(r"innings_\d+"))
     if not innings_divs:
-        # Alternative: look for scorecard tables
         innings_divs = soup.find_all("div", class_=re.compile(r"cb-col cb-col-100 cb-ltst-wgt-hdr"))
 
     for idx, innings_div in enumerate(innings_divs):
@@ -53,7 +203,6 @@ def _parse_scorecard_html(match_id: str, html: str) -> dict:
         if innings_data and (innings_data.get("batting") or innings_data.get("bowling")):
             innings_list.append(innings_data)
 
-    # If no innings found via divs, try parsing tables directly
     if not innings_list:
         innings_list = _parse_scorecard_tables(soup, fielding_map)
 
@@ -336,11 +485,23 @@ def _increment_fielding(fielding_map: dict, player_name: str, field: str) -> Non
 
 
 def _count_lbw_bowled(innings_data: list[dict], bowler_name: str) -> int:
-    """Count how many batters a bowler dismissed via LBW or bowled."""
+    """Count how many batters a bowler dismissed via LBW or bowled.
+
+    Works with both the legacy 'dismissal' text field and the modern
+    'wicket_code' field from the RSC JSON payload.
+    """
     count = 0
     bowler_lower = bowler_name.lower().strip()
     for batter in innings_data:
+        wicket_code = batter.get("wicket_code", "").upper()
         dismissal = batter.get("dismissal", "").lower()
-        if ("lbw" in dismissal or "bowled" in dismissal or dismissal.startswith("b ")) and bowler_lower in dismissal:
-            count += 1
+
+        if wicket_code in ("BOWLED", "LBW"):
+            # Verify it was this bowler (check dismissal text)
+            if bowler_lower in dismissal:
+                count += 1
+        elif not wicket_code:
+            # Legacy: parse dismissal text
+            if ("lbw" in dismissal or "bowled" in dismissal or dismissal.startswith("b ")) and bowler_lower in dismissal:
+                count += 1
     return count
