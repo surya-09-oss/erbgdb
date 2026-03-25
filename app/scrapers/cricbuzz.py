@@ -88,19 +88,26 @@ def _timestamp_to_ist(ts_millis: str) -> str | None:
 
 
 def _extract_rsc_matches(html_text: str) -> list[dict]:
-    """Extract match data from Cricbuzz Next.js RSC payload embedded in HTML."""
+    """Extract match data from Cricbuzz Next.js RSC payload embedded in HTML.
+
+    Searches *all* ``self.__next_f.push`` chunks (not just the first) because
+    the typeMatches data may appear in any chunk.
+    """
     soup = BeautifulSoup(html_text, "lxml")
     scripts = soup.find_all("script")
 
     for script in scripts:
-        if script.string and "typeMatches" in script.string:
-            rsc_match = re.search(
-                r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', script.string, re.DOTALL
-            )
-            if not rsc_match:
+        if not script.string or "typeMatches" not in script.string:
+            continue
+
+        # Search ALL chunks, not just the first regex match
+        chunks = re.findall(
+            r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', script.string, re.DOTALL
+        )
+        for raw in chunks:
+            if "typeMatches" not in raw:
                 continue
 
-            raw = rsc_match.group(1)
             unescaped = raw.replace('\\"', '"').replace("\\\\", "\\").replace("\\n", "\n")
 
             idx = unescaped.find('"typeMatches"')
@@ -142,7 +149,8 @@ def _extract_rsc_matches(html_text: str) -> list[dict]:
                         all_matches.append(
                             _format_match(info, score_data, match_type, series_name)
                         )
-            return all_matches
+            if all_matches:
+                return all_matches
 
     return []
 
