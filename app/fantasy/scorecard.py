@@ -1,13 +1,20 @@
-"""Cricbuzz scorecard scraper — fetches detailed batting/bowling/fielding stats
-for a specific match so fantasy points can be calculated per player."""
+"""Cricbuzz scorecard scraper — extracts structured batting/bowling/fielding stats
+from Cricbuzz's Next.js RSC (React Server Components) payload so fantasy points
+can be calculated per player.
+
+The old HTML-table parser no longer works because Cricbuzz moved to a Next.js RSC
+architecture where scorecard data is embedded as JSON inside ``self.__next_f.push``
+script chunks.  This module now extracts the ``scorecardApiData`` JSON object
+directly, which contains ``scoreCard`` (per-innings batting + bowling data) and
+``matchHeader`` (match metadata).
+"""
 
 import logging
 import re
 
 import httpx
-from bs4 import BeautifulSoup, Tag
 
-from app.scrapers.cricbuzz import _fetch_cricbuzz_page, _get_headers, BASE_URL
+from app.scrapers.cricbuzz import _fetch_cricbuzz_page, _extract_rsc_key_object
 
 logger = logging.getLogger(__name__)
 
@@ -22,40 +29,46 @@ async def fetch_full_scorecard(match_id: str) -> dict:
     """
     try:
         html = await _fetch_cricbuzz_page(
-            f"/api/html/cricket-scorecard/{match_id}"
+            f"/live-cricket-scorecard/{match_id}"
         )
     except httpx.HTTPError:
-        # Try the regular scorecard page
-        try:
-            html = await _fetch_cricbuzz_page(
-                f"/live-cricket-scorecard/{match_id}"
-            )
-        except httpx.HTTPError:
-            return {"match_id": match_id, "error": "Failed to fetch scorecard", "innings": []}
+        return {"match_id": match_id, "error": "Failed to fetch scorecard", "innings": []}
 
-    return _parse_scorecard_html(match_id, html)
+    return _parse_scorecard_rsc(match_id, html)
 
 
-def _parse_scorecard_html(match_id: str, html: str) -> dict:
-    """Parse Cricbuzz scorecard HTML into structured data."""
-    soup = BeautifulSoup(html, "lxml")
+def _parse_scorecard_rsc(match_id: str, html: str) -> dict:
+    """Parse Cricbuzz scorecard page by extracting the scorecardApiData JSON
+    from the RSC payload embedded in the HTML."""
+
+    scorecard_data = _extract_rsc_key_object(html, "scorecardApiData")
+
+    if not scorecard_data:
+        logger.warning("Could not extract scorecardApiData for match %s", match_id)
+        return {"match_id": match_id, "error": "Could not parse scorecard data", "innings": []}
+
+    score_cards = scorecard_data.get("scoreCard", [])
+    match_header = scorecard_data.get("matchHeader", {})
+
+    if not score_cards:
+        state = match_header.get("state", "")
+        if state in ("Toss", "Preview", "Upcoming"):
+            return {
+                "match_id": match_id,
+                "innings": [],
+                "fielding": {},
+                "match_state": state,
+                "status": match_header.get("status", "Match has not started yet"),
+            }
+        return {"match_id": match_id, "error": "No scorecard data available yet", "innings": []}
+
     innings_list: list[dict] = []
-    fielding_map: dict[str, dict] = {}  # player_name -> {catches, stumpings, run_out_direct, run_out_assist}
+    fielding_map: dict[str, dict] = {}
 
-    # Find all innings sections
-    innings_divs = soup.find_all("div", id=re.compile(r"innings_\d+"))
-    if not innings_divs:
-        # Alternative: look for scorecard tables
-        innings_divs = soup.find_all("div", class_=re.compile(r"cb-col cb-col-100 cb-ltst-wgt-hdr"))
-
-    for idx, innings_div in enumerate(innings_divs):
-        innings_data = _parse_innings(innings_div, fielding_map, idx + 1)
-        if innings_data and (innings_data.get("batting") or innings_data.get("bowling")):
-            innings_list.append(innings_data)
-
-    # If no innings found via divs, try parsing tables directly
-    if not innings_list:
-        innings_list = _parse_scorecard_tables(soup, fielding_map)
+    for idx, innings_data in enumerate(score_cards):
+        parsed = _parse_rsc_innings(innings_data, fielding_map, idx + 1)
+        if parsed and (parsed.get("batting") or parsed.get("bowling")):
+            innings_list.append(parsed)
 
     return {
         "match_id": match_id,
@@ -64,99 +77,78 @@ def _parse_scorecard_html(match_id: str, html: str) -> dict:
     }
 
 
-def _parse_innings(div: Tag, fielding_map: dict, innings_num: int) -> dict:
-    """Parse a single innings div into batting and bowling data."""
+def _parse_rsc_innings(innings_data: dict, fielding_map: dict, innings_num: int) -> dict:
+    """Parse a single innings from the RSC scoreCard entry."""
     batting: list[dict] = []
     bowling: list[dict] = []
 
-    # Find batting entries
-    bat_rows = div.find_all("div", class_=re.compile(r"cb-col cb-col-100 cb-scrd-itms"))
-    for row in bat_rows:
-        cols = row.find_all("div", class_=re.compile(r"cb-col"))
-        if len(cols) < 2:
+    # --- Batting ---
+    bat_team = innings_data.get("batTeamDetails", {})
+    batsmen_data = bat_team.get("batsmenData", {})
+
+    for _key, batter in batsmen_data.items():
+        name = batter.get("batName", "")
+        if not name:
             continue
 
-        first_col_text = cols[0].get_text(strip=True)
-        # Skip header/extras/total rows
-        if not first_col_text or first_col_text in ("Extras", "Total", "Fall of Wickets"):
-            continue
+        runs = int(batter.get("runs", 0))
+        balls = int(batter.get("balls", 0))
+        fours = int(batter.get("fours", 0))
+        sixes = int(batter.get("sixes", 0))
+        out_desc = batter.get("outDesc", "")
+        wicket_code = batter.get("wicketCode", "")
 
-        # Check if this is a batter row (has a link to player profile)
-        player_link = cols[0].find("a")
-        if not player_link:
-            continue
-
-        player_name = player_link.get_text(strip=True)
-        if not player_name:
-            continue
-
-        # Try to determine dismissal info
-        dismissal_text = ""
-        if len(cols) > 1:
-            dismissal_col = cols[1] if len(cols) > 1 else None
-            if dismissal_col:
-                dismissal_text = dismissal_col.get_text(strip=True).lower()
-
-        # Parse numeric stats
-        stats = _extract_numeric_cols(cols[2:])
-        runs = stats[0] if len(stats) > 0 else 0
-        balls = stats[1] if len(stats) > 1 else 0
-        fours = stats[2] if len(stats) > 2 else 0
-        sixes = stats[3] if len(stats) > 3 else 0
-
-        is_out = "not out" not in dismissal_text and dismissal_text != ""
-        is_duck = runs == 0 and is_out
+        is_out = bool(wicket_code) and wicket_code.upper() not in ("", "NOT_OUT", "NOT OUT")
 
         batting.append({
-            "name": player_name,
+            "name": name,
             "runs": runs,
             "balls": balls,
             "fours": fours,
             "sixes": sixes,
             "is_out": is_out,
-            "dismissal": dismissal_text,
+            "dismissal": out_desc.lower() if out_desc else "",
+            "wicket_code": wicket_code,
             "strike_rate": round((runs / balls) * 100, 2) if balls > 0 else 0.0,
         })
 
-        # Parse fielding from dismissal text
-        _extract_fielding_from_dismissal(dismissal_text, fielding_map)
+        # Extract fielding from structured data (fielderId) — preferred
+        # Only fall back to dismissal text parsing if structured extraction
+        # didn't find the fielder (to avoid double-counting).
+        pre_count = len(fielding_map)
+        _extract_fielding_from_structured(batter, wicket_code, fielding_map, innings_data)
+        if len(fielding_map) == pre_count:
+            _extract_fielding_from_dismissal(out_desc.lower() if out_desc else "", fielding_map)
 
-    # Find bowling entries - look for bowling table
-    bowl_section = div.find_all("div", class_=re.compile(r"cb-col cb-col-100 cb-scrd-itms"))
-    in_bowling = False
-    for row in bowl_section:
-        text = row.get_text(strip=True)
-        if "BOWLING" in text.upper():
-            in_bowling = True
-            continue
-        if not in_bowling:
-            continue
+    # --- Bowling ---
+    bowl_team = innings_data.get("bowlTeamDetails", {})
+    bowlers_data = bowl_team.get("bowlersData", {})
 
-        cols = row.find_all("div", class_=re.compile(r"cb-col"))
-        if len(cols) < 2:
-            continue
-
-        player_link = cols[0].find("a")
-        if not player_link:
+    for _key, bowler in bowlers_data.items():
+        name = bowler.get("bowlName", "")
+        if not name:
             continue
 
-        bowler_name = player_link.get_text(strip=True)
-        if not bowler_name:
-            continue
+        overs_raw = bowler.get("overs", 0)
+        maidens = int(bowler.get("maidens", 0))
+        runs_conceded = int(bowler.get("runs", 0))
+        wickets = int(bowler.get("wickets", 0))
+        economy = bowler.get("economy", 0)
 
-        stats = _extract_numeric_cols(cols[1:])
-        overs = stats[0] if len(stats) > 0 else 0
-        maidens = stats[1] if len(stats) > 1 else 0
-        runs_conceded = stats[2] if len(stats) > 2 else 0
-        wickets = stats[3] if len(stats) > 3 else 0
+        try:
+            overs_float = float(overs_raw)
+        except (ValueError, TypeError):
+            overs_float = 0.0
 
         bowling.append({
-            "name": bowler_name,
-            "overs": overs,
+            "name": name,
+            "overs": overs_raw,
             "maidens": maidens,
             "runs_conceded": runs_conceded,
             "wickets": wickets,
-            "economy": round(runs_conceded / overs, 2) if overs > 0 else 0.0,
+            "economy": round(float(economy), 2) if economy else (
+                round(runs_conceded / overs_float, 2) if overs_float > 0 else 0.0
+            ),
         })
 
     return {
@@ -166,130 +158,82 @@ def _parse_innings(div: Tag, fielding_map: dict, innings_num: int) -> dict:
     }
 
 
-def _parse_scorecard_tables(soup: BeautifulSoup, fielding_map: dict) -> list[dict]:
-    """Fallback parser that looks for scorecard data in table format."""
-    innings_list: list[dict] = []
+def _extract_fielding_from_structured(
+    batter: dict,
+    wicket_code: str,
+    fielding_map: dict,
+    innings_data: dict,
+) -> None:
+    """Extract fielding credits from structured RSC batter data using
+    fielderId1/2/3 and wicketCode fields."""
+    if not wicket_code or wicket_code.upper() in ("", "NOT_OUT", "NOT OUT"):
+        return
 
-    tables = soup.find_all("table")
-    current_batting: list[dict] = []
-    current_bowling: list[dict] = []
-    innings_num = 0
+    wicket_upper = wicket_code.upper()
 
-    for table in tables:
-        rows = table.find_all("tr")
-        if not rows:
-            continue
+    if wicket_upper == "CAUGHT":
+        fielder_id = batter.get("fielderId1", 0)
+        if fielder_id:
+            fielder_name = _resolve_fielder_name(fielder_id, innings_data)
+            if fielder_name:
+                _increment_fielding(fielding_map, fielder_name, "catches")
 
-        # Detect if this is a batting or bowling table by headers
-        header = rows[0].get_text(strip=True).lower()
+    elif wicket_upper == "STUMPED":
+        fielder_id = batter.get("fielderId1", 0)
+        if fielder_id:
+            fielder_name = _resolve_fielder_name(fielder_id, innings_data)
+            if fielder_name:
+                _increment_fielding(fielding_map, fielder_name, "stumpings")
 
-        if "batter" in header or "batsman" in header or "batting" in header:
-            innings_num += 1
-            current_batting = []
-            for row in rows[1:]:
-                cells = row.find_all("td")
-                if len(cells) < 6:
-                    continue
-                name_cell = cells[0]
-                player_link = name_cell.find("a")
-                name = player_link.get_text(strip=True) if player_link else name_cell.get_text(strip=True)
-                if not name or name.lower() in ("extras", "total"):
-                    continue
+    elif wicket_upper in ("RUN_OUT", "RUNOUT", "RUN OUT"):
+        fielder_id1 = batter.get("fielderId1", 0)
+        fielder_id2 = batter.get("fielderId2", 0)
+        if fielder_id1:
+            fielder_name = _resolve_fielder_name(fielder_id1, innings_data)
+            if fielder_name:
+                _increment_fielding(fielding_map, fielder_name, "run_out_direct")
+        if fielder_id2:
+            fielder_name2 = _resolve_fielder_name(fielder_id2, innings_data)
+            if fielder_name2:
+                _increment_fielding(fielding_map, fielder_name2, "run_out_assist")
 
-                dismissal = cells[1].get_text(strip=True).lower() if len(cells) > 1 else ""
-                nums = []
-                for c in cells[2:]:
-                    try:
-                        nums.append(int(c.get_text(strip=True)))
-                    except ValueError:
-                        nums.append(0)
-
-                runs = nums[0] if nums else 0
-                balls = nums[1] if len(nums) > 1 else 0
-                fours = nums[2] if len(nums) > 2 else 0
-                sixes = nums[3] if len(nums) > 3 else 0
-
-                is_out = "not out" not in dismissal and dismissal != ""
-                current_batting.append({
-                    "name": name,
-                    "runs": runs,
-                    "balls": balls,
-                    "fours": fours,
-                    "sixes": sixes,
-                    "is_out": is_out,
-                    "dismissal": dismissal,
-                    "strike_rate": round((runs / balls) * 100, 2) if balls > 0 else 0.0,
-                })
-                _extract_fielding_from_dismissal(dismissal, fielding_map)
-
-        elif "bowler" in header or "bowling" in header:
-            current_bowling = []
-            for row in rows[1:]:
-                cells = row.find_all("td")
-                if len(cells) < 5:
-                    continue
-                name_cell = cells[0]
-                player_link = name_cell.find("a")
-                name = player_link.get_text(strip=True) if player_link else name_cell.get_text(strip=True)
-                if not name:
-                    continue
-
-                nums: list[float] = []
-                for c in cells[1:]:
-                    try:
-                        nums.append(float(c.get_text(strip=True)))
-                    except ValueError:
-                        nums.append(0)
-
-                overs = nums[0] if nums else 0
-                maidens = int(nums[1]) if len(nums) > 1 else 0
-                runs_conceded = int(nums[2]) if len(nums) > 2 else 0
-                wickets = int(nums[3]) if len(nums) > 3 else 0
-
-                current_bowling.append({
-                    "name": name,
-                    "overs": overs,
-                    "maidens": maidens,
-                    "runs_conceded": runs_conceded,
-                    "wickets": wickets,
-                    "economy": round(runs_conceded / overs, 2) if overs > 0 else 0.0,
-                })
-
-            # After bowling table, save the complete innings
-            if current_batting or current_bowling:
-                innings_list.append({
-                    "innings_number": innings_num,
-                    "batting": current_batting,
-                    "bowling": current_bowling,
-                })
-                current_batting = []
-                current_bowling = []
-
-    # If we have leftover data
-    if current_batting or current_bowling:
-        innings_list.append({
-            "innings_number": innings_num,
-            "batting": current_batting,
-            "bowling": current_bowling,
-        })
-
-    return innings_list
+    elif wicket_upper in ("CAUGHT_AND_BOWLED", "CAUGHT AND BOWLED"):
+        bowler_id = batter.get("bowlerId", 0)
+        if bowler_id:
+            bowler_name = _resolve_bowler_name(bowler_id, innings_data)
+            if bowler_name:
+                _increment_fielding(fielding_map, bowler_name, "catches")
 
 
-def _extract_numeric_cols(cols: list) -> list[float]:
-    """Extract numeric values from a list of HTML column elements."""
-    values: list[float] = []
-    for col in cols:
-        text = col.get_text(strip=True)
-        try:
-            values.append(float(text))
-        except (ValueError, TypeError):
-            pass
-    return values
+def _resolve_fielder_name(fielder_id: int, innings_data: dict) -> str:
+    """Try to resolve a fielder ID to a player name.
+    Fielders are on the bowling team, so look in bowlTeamDetails.bowlersData."""
+    if not fielder_id:
+        return ""
+
+    bowl_team = innings_data.get("bowlTeamDetails", {})
+    bowlers = bowl_team.get("bowlersData", {})
+    for _k, bowler in bowlers.items():
+        if bowler.get("bowlerId") == fielder_id:
+            return bowler.get("bowlName", "")
+    return ""
+
+
+def _resolve_bowler_name(bowler_id: int, innings_data: dict) -> str:
+    """Resolve a bowler ID to name from bowlersData."""
+    if not bowler_id:
+        return ""
+    bowl_team = innings_data.get("bowlTeamDetails", {})
+    bowlers = bowl_team.get("bowlersData", {})
+    for _k, bowler in bowlers.items():
+        if bowler.get("bowlerId") == bowler_id:
+            return bowler.get("bowlName", "")
+    return ""
 
 
 def _extract_fielding_from_dismissal(dismissal: str, fielding_map: dict) -> None:
-    """Parse a dismissal string to credit fielders with catches, stumpings, run outs."""
+    """Parse a dismissal string to credit fielders with catches, stumpings, run outs.
+    This is a fallback when structured fielder ID resolution fails."""
     if not dismissal:
         return
 
@@ -315,7 +259,6 @@ def _extract_fielding_from_dismissal(dismissal: str, fielding_map: dict) -> None
         if len(fielders) == 1:
             _increment_fielding(fielding_map, fielders[0], "run_out_direct")
         else:
-            # First fielder gets direct hit, rest get assist
             _increment_fielding(fielding_map, fielders[0], "run_out_direct")
             for f in fielders[1:]:
                 _increment_fielding(fielding_map, f, "run_out_assist")
@@ -336,11 +279,17 @@ def _increment_fielding(fielding_map: dict, player_name: str, field: str) -> Non
 
 
 def _count_lbw_bowled(innings_data: list[dict], bowler_name: str) -> int:
-    """Count how many batters a bowler dismissed via LBW or bowled."""
+    """Count how many batters a bowler dismissed via LBW or bowled.
+    Works with both old-style dismissal text and new wicketCode field."""
     count = 0
     bowler_lower = bowler_name.lower().strip()
     for batter in innings_data:
+        wicket_code = batter.get("wicket_code", "").upper()
         dismissal = batter.get("dismissal", "").lower()
-        if ("lbw" in dismissal or "bowled" in dismissal or dismissal.startswith("b ")) and bowler_lower in dismissal:
+
+        is_lbw_bowled = wicket_code in ("LBW", "BOWLED") or (
+            ("lbw" in dismissal or "bowled" in dismissal or dismissal.startswith("b "))
+        )
+        if is_lbw_bowled and bowler_lower in dismissal:
             count += 1
     return count

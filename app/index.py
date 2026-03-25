@@ -22,6 +22,7 @@ from app.scrapers.ipl_api import (
 from app.scrapers.international_api import (
     INTERNATIONAL_MATCHES,
     INTERNATIONAL_TEAM_CODES,
+    discover_international_matches,
     fetch_international_live_scores,
     fetch_international_match_score,
     get_international_matches,
@@ -50,24 +51,61 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 jinja_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=True)
 
 # ---------------------------------------------------------------------------
-# All tracked match IDs for auto-update (IPL + International)
+# Auto-update configuration
 # ---------------------------------------------------------------------------
-AUTO_UPDATE_MATCH_IDS: list[str] = [
-    "149618",
-    "122731",
-]
-
 _auto_update_task: Optional[asyncio.Task] = None  # type: ignore[type-arg]
+
+# Live states that should trigger fantasy-point refresh
+_LIVE_STATES = {"In Progress", "Toss", "Stumps", "Lunch", "Tea", "Innings Break", "Drink", "Complete"}
+
+
+async def _discover_live_match_ids() -> list[str]:
+    """Dynamically discover all live/in-progress match IDs from Cricbuzz.
+
+    Fetches the live-scores page and returns match IDs for matches that are
+    currently in progress, at toss, or recently completed — covering both
+    IPL and international matches automatically.
+    """
+    from app.scrapers.cricbuzz import fetch_live_matches
+
+    try:
+        all_matches = await fetch_live_matches()
+    except Exception:
+        logger.exception("Failed to discover live matches for auto-update")
+        return list(INTERNATIONAL_MATCHES.keys())
+
+    live_ids: list[str] = []
+    for match in all_matches:
+        state = match.get("state", "")
+        if state in _LIVE_STATES:
+            mid = str(match.get("match_id", ""))
+            if mid:
+                live_ids.append(mid)
+
+    # Also include any previously discovered international matches
+    for mid in INTERNATIONAL_MATCHES:
+        if mid not in live_ids:
+            live_ids.append(mid)
+
+    return live_ids
 
 
 async def _auto_update_fantasy_points() -> None:
-    """Background task that refreshes fantasy points for all tracked matches every 30s."""
+    """Background task that refreshes fantasy points for all live matches every 30s.
+
+    Dynamically discovers live match IDs from Cricbuzz on each cycle, so new
+    matches are picked up automatically without code changes or restarts.
+    """
     while True:
         try:
-            all_match_ids = list(set(
-                AUTO_UPDATE_MATCH_IDS + list(INTERNATIONAL_MATCHES.keys())
-            ))
-            for match_id in all_match_ids:
+            # Discover international matches to keep registry fresh
+            await discover_international_matches()
+
+            # Get all live match IDs dynamically
+            live_ids = await _discover_live_match_ids()
+            logger.info("Auto-update: discovered %d live matches: %s", len(live_ids), live_ids)
+
+            for match_id in live_ids:
                 try:
                     await process_match(match_id, force_refresh=True)
                     logger.info("Auto-updated fantasy points for match %s", match_id)
@@ -671,16 +709,16 @@ async def fantasy_team_match_history(team_code: str) -> dict:
 @app.get("/api/fantasy/auto-update-status")
 async def fantasy_auto_update_status() -> dict:
     """Check the status of the auto-update background task."""
-    all_tracked = list(set(
-        AUTO_UPDATE_MATCH_IDS + list(INTERNATIONAL_MATCHES.keys())
-    ))
+    tracked = list(INTERNATIONAL_MATCHES.keys())
     return {
         "status": "success",
         "auto_update": {
             "enabled": True,
             "interval_seconds": 30,
-            "tracked_matches": all_tracked,
-            "total_tracked": len(all_tracked),
+            "mode": "dynamic",
+            "description": "Automatically discovers all live IPL and international matches from Cricbuzz",
+            "known_international_matches": tracked,
+            "total_known_international": len(tracked),
             "task_running": _auto_update_task is not None and not _auto_update_task.done(),
         },
     }
