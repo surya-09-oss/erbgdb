@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 *.pyo
-.env
+# .env # Removed by Orchids to allow .env files
 .venv/
 dist/
 *.egg-info/
